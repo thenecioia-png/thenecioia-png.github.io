@@ -225,20 +225,20 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 }
 
 /* respiración + parpadeo + cola, todo sutil y fluido */
-.m-torso { transform-origin: 180px 338px; animation: breathe 4.2s ease-in-out infinite; }
+.m-torso { transform-origin: 180px 266px; animation: breathe 4.2s ease-in-out infinite; }
 @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.015, .985); } }
 .m-lids { opacity: 0; animation: blink 6.5s infinite; }
 @keyframes blink {
   0%, 94%, 100% { opacity: 0; }
   95%, 97% { opacity: 1; }
 }
-.m-tail { transform-origin: 258px 296px; animation: tailWag 3.4s ease-in-out infinite; }
+.m-tail { transform-origin: 236px 300px; animation: tailWag 3.4s ease-in-out infinite; }
 @keyframes tailWag { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-13deg); } }
-.m-wing-l { transform-origin: 116px 150px; animation: wingL 4.4s ease-in-out infinite; }
-.m-wing-r { transform-origin: 244px 150px; animation: wingR 4.4s ease-in-out infinite; }
+.m-wing-l { transform-origin: 132px 214px; animation: wingL 4.4s ease-in-out infinite; }
+.m-wing-r { transform-origin: 228px 214px; animation: wingR 4.4s ease-in-out infinite; }
 @keyframes wingL { 0%,100% { transform: rotate(0); } 50% { transform: rotate(9deg); } }
 @keyframes wingR { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-9deg); } }
-.m-trident { transform-origin: 252px 360px; animation: tridentSway 5.5s ease-in-out infinite; }
+.m-trident { transform-origin: 252px 354px; animation: tridentSway 5.5s ease-in-out infinite; }
 @keyframes tridentSway { 0%,100% { transform: rotate(0); } 50% { transform: rotate(3.5deg); } }
 
 .scroll-hint {

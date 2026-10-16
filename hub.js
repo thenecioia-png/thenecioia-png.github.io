@@ -232,16 +232,44 @@ const STATIC_DATA = {
   ]
 };
 
-async function loadPublic() {
-  state.profile = STATIC_DATA.profile;
-  state.items = STATIC_DATA.items || [];
+/* ── Almacén local (sin backend) ──────────────────────────────────── */
+const LS_ITEMS = 'necio_hub_items';
+const LS_PROFILE = 'necio_hub_profile';
+const ADMIN_EMAIL = 'admin@theneciodigital.com';
+const ADMIN_PASS_HASH = '5a55c7873ed7338f35d782adb513d336a36086ddec0fa4b6444fda6d440387c2';
+const ADMIN_TOKEN = 'necio-local-admin';
+
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+function loadItems() {
+  try {
+    const raw = localStorage.getItem(LS_ITEMS);
+    if (raw) { const d = JSON.parse(raw); if (Array.isArray(d)) return d; }
+  } catch {}
+  return STATIC_DATA.items.map((x) => ({ ...x }));
+}
+function saveItems(items) { localStorage.setItem(LS_ITEMS, JSON.stringify(items)); }
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(LS_PROFILE);
+    if (raw) { const p = JSON.parse(raw); if (p && typeof p === 'object') return p; }
+  } catch {}
+  return { ...STATIC_DATA.profile };
+}
+function saveProfile(p) { localStorage.setItem(LS_PROFILE, JSON.stringify(p)); }
+
+function loadPublic() {
+  state.profile = loadProfile();
+  state.items = loadItems();
   renderHero();
   renderSections();
   renderNavLinks();
 }
-async function loadAdmin() {
-  const data = await api('/api/hub');
-  state.items = Array.isArray(data) ? data : (data.items || []);
+function loadAdmin() {
+  state.items = loadItems();
   renderSections();
 }
 
@@ -251,7 +279,7 @@ function enterAdmin(user) {
   $('admin-toggle').classList.add('is-admin');
   $('admin-label').textContent = user.name || 'Admin';
   $('admin-bar').classList.remove('hidden');
-  loadAdmin().catch((e) => toast(e.message, 'err'));
+  loadAdmin();
 }
 function logout() {
   state.token = null;
@@ -260,7 +288,7 @@ function logout() {
   $('admin-toggle').classList.remove('is-admin');
   $('admin-label').textContent = 'Admin';
   $('admin-bar').classList.add('hidden');
-  loadPublic().catch(() => {});
+  loadPublic();
   toast('Sesión cerrada');
 }
 
@@ -282,36 +310,23 @@ $('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('login-error');
   err.classList.add('hidden');
+  const email = $('login-email').value.trim().toLowerCase();
+  const password = $('login-password').value;
   try {
-    if (state.loginPhase === 'creds') {
-      const email = $('login-email').value.trim();
-      const password = $('login-password').value;
-      const res = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-      if (res.requires2fa) {
-        state.loginPhase = '2fa';
-        state.tempToken = res.temp_token;
-        $('login-2fa-wrap').classList.remove('hidden');
-        $('login-2fa').focus();
-        return;
-      }
-      state.token = res.token;
-      localStorage.setItem('hub_token', res.token);
+    const passHash = await sha256(password);
+    if (email === ADMIN_EMAIL && passHash === ADMIN_PASS_HASH) {
+      state.token = ADMIN_TOKEN;
+      localStorage.setItem('hub_token', ADMIN_TOKEN);
       closeModal('login-modal');
       resetLogin();
-      enterAdmin(res.user);
-      toast('Bienvenido, ' + (res.user.name || 'admin'));
+      enterAdmin({ name: 'El Necio', email: ADMIN_EMAIL });
+      toast('Bienvenido, El Necio');
     } else {
-      const code = $('login-2fa').value.trim();
-      const res = await api('/api/auth/2fa/verify', { method: 'POST', body: JSON.stringify({ temp_token: state.tempToken, code }) });
-      state.token = res.token;
-      localStorage.setItem('hub_token', res.token);
-      closeModal('login-modal');
-      resetLogin();
-      enterAdmin(res.user);
-      toast('Bienvenido, ' + (res.user.name || 'admin'));
+      err.textContent = 'Email o contraseña incorrectos.';
+      err.classList.remove('hidden');
     }
   } catch (er) {
-    err.textContent = er.message;
+    err.textContent = 'No se pudo verificar. Inténtalo de nuevo.';
     err.classList.remove('hidden');
   }
 });
@@ -353,48 +368,59 @@ $('item-color').addEventListener('input', () => { $('item-color-text').value = $
 $('item-color-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('item-color-text').value)) $('item-color').value = $('item-color-text').value;
 });
-$('item-form').addEventListener('submit', async (e) => {
+$('item-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const err = $('item-error');
   err.classList.add('hidden');
   const id = $('item-id').value;
+  const title = $('item-title').value.trim();
+  if (!title) {
+    err.textContent = 'El título es obligatorio.';
+    err.classList.remove('hidden');
+    return;
+  }
   const body = {
     section: $('item-section').value,
-    title: $('item-title').value.trim(),
+    title,
     url: $('item-url').value.trim(),
     description: $('item-description').value.trim(),
     icon: $('item-icon').value.trim() || '🔗',
     color: $('item-color').value,
     visibility: $('item-visibility').checked ? 'public' : 'private',
   };
-  try {
-    if (id) await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify(body) });
-    else await api('/api/hub', { method: 'POST', body: JSON.stringify(body) });
-    closeModal('item-modal');
-    await loadAdmin();
-    toast(id ? 'Elemento actualizado' : 'Elemento agregado', 'ok');
-  } catch (er) {
-    err.textContent = er.message;
-    err.classList.remove('hidden');
+  const items = loadItems();
+  if (id) {
+    const it = items.find((x) => String(x.id) === String(id));
+    if (it) Object.assign(it, body);
+  } else {
+    const nextId = items.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
+    items.push({ id: nextId, ...body });
   }
+  saveItems(items);
+  state.items = items;
+  closeModal('item-modal');
+  loadAdmin();
+  toast(id ? 'Elemento actualizado' : 'Elemento agregado', 'ok');
 });
 
-async function deleteItem(id) {
+function deleteItem(id) {
   if (!confirm('¿Eliminar este elemento?')) return;
-  try {
-    await api('/api/hub/' + id, { method: 'DELETE' });
-    await loadAdmin();
-    toast('Elemento eliminado');
-  } catch (e) { toast(e.message, 'err'); }
+  const items = loadItems().filter((x) => String(x.id) !== String(id));
+  saveItems(items);
+  state.items = items;
+  loadAdmin();
+  toast('Elemento eliminado');
 }
-async function toggleItem(id) {
-  const it = state.items.find((x) => x.id == id);
+function toggleItem(id) {
+  const items = loadItems();
+  const it = items.find((x) => String(x.id) === String(id));
   if (!it) return;
-  try {
-    await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify({ visibility: it.visibility === 'public' ? 'private' : 'public' }) });
-    await loadAdmin();
-    toast(it.visibility === 'public' ? 'Ahora es privado' : 'Ahora es público', 'ok');
-  } catch (e) { toast(e.message, 'err'); }
+  const wasPublic = it.visibility === 'public';
+  it.visibility = wasPublic ? 'private' : 'public';
+  saveItems(items);
+  state.items = items;
+  loadAdmin();
+  toast(wasPublic ? 'Ahora es privado' : 'Ahora es público', 'ok');
 }
 
 /* ── profile ───────────────────────────────────────────────────────── */
@@ -413,31 +439,32 @@ $('profile-accent').addEventListener('input', () => { $('profile-accent-text').v
 $('profile-accent-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('profile-accent-text').value)) $('profile-accent').value = $('profile-accent-text').value;
 });
-$('profile-form').addEventListener('submit', async (e) => {
+$('profile-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const err = $('profile-error');
   err.classList.add('hidden');
+  const name = $('profile-name').value.trim();
+  if (!name) {
+    err.textContent = 'El nombre es obligatorio.';
+    err.classList.remove('hidden');
+    return;
+  }
   const body = {
-    name: $('profile-name').value.trim(),
+    name,
     emoji: $('profile-emoji').value.trim() || '⚡',
     tagline: $('profile-tagline').value.trim(),
     bio: $('profile-bio').value.trim(),
     accent: $('profile-accent').value,
   };
-  try {
-    await api('/api/hub/profile', { method: 'PUT', body: JSON.stringify(body) });
-    closeModal('profile-modal');
-    state.profile = { ...state.profile, ...body };
-    renderHero();
-    toast('Perfil actualizado', 'ok');
-  } catch (er) {
-    err.textContent = er.message;
-    err.classList.remove('hidden');
-  }
+  saveProfile({ ...loadProfile(), ...body });
+  closeModal('profile-modal');
+  state.profile = { ...state.profile, ...body };
+  renderHero();
+  toast('Perfil actualizado', 'ok');
 });
 
 /* ── security (2FA) ────────────────────────────────────────────────── */
-$('admin-security-btn').addEventListener('click', openSecurity);
+$('admin-security-btn')?.addEventListener('click', openSecurity);
 async function openSecurity() {
   $('security-error').classList.add('hidden');
   openModal('security-modal');
@@ -513,7 +540,7 @@ async function startSetup() {
 }
 
 /* ── API token (vía directa para la IA) ────────────────────────────── */
-$('admin-token-btn').addEventListener('click', async () => {
+$('admin-token-btn')?.addEventListener('click', async () => {
   try {
     const res = await api('/api/hub/token', { method: 'POST' });
     showToken(res.token);
@@ -545,15 +572,11 @@ $('admin-logout-btn').addEventListener('click', logout);
 
 (async function boot() {
   try {
-    if (state.token) {
-      // validar sesión existente
-      try {
-        const me = await api('/api/me');
-        enterAdmin(me);
-        return;
-      } catch { state.token = null; localStorage.removeItem('hub_token'); }
+    if (state.token === ADMIN_TOKEN) {
+      enterAdmin({ name: 'El Necio', email: ADMIN_EMAIL });
+      return;
     }
-    await loadPublic();
+    loadPublic();
   } catch (e) {
     console.error('boot error', e);
     $('sections').innerHTML = '<p style="text-align:center;color:var(--ink-dim);padding:40px">No se pudo cargar el hub.</p>';
@@ -567,17 +590,28 @@ $('admin-logout-btn').addEventListener('click', logout);
 (function () {
   'use strict';
 
-  /* ── Radio en vivo ─────────────────────────────────────────────── */
-  const radio = { stations: [], current: null, audio: null };
+  /* ── Radio en vivo ───────────────────────────────────────────────
+     Emisoras reales con stream directo (sin backend). Todas HTTPS. */
+  const RADIO_STATIONS = [
+    { id: 'z101',    name: 'La Z101',            genre: 'Merengue · Salsa · Noticias', country: '🇩🇴', stream: 'https://streaming.z101digital.com/z101' },
+    { id: 'lax',     name: 'La X 102.1',         genre: 'Éxitos y variedad',          country: '🇩🇴', stream: 'https://audio.livecastnet.com:2535/stream' },
+    { id: 'fuego',   name: 'Fuego 90.1',         genre: 'Merengue',                   country: '🇩🇴', stream: 'https://radiordomi.com/8390/stream' },
+    { id: 'urbano',  name: 'Top Urbano',         genre: 'Urbano · Reggaetón',         country: '🇩🇴', stream: 'https://radio.dominiserver.com/proxy/topurbano?mp=/stream' },
+    { id: 'salsa',   name: 'Salsa 92.7',         genre: 'Salsa',                      country: '🇩🇴', stream: 'https://stream.zeno.fm/h7lnwv51bh5uv' },
+    { id: 'bachata', name: 'Bachata Hits',       genre: 'Bachata',                    country: '🇩🇴', stream: 'https://stream.zeno.fm/prbf8rrgvzzuv' },
+    { id: 'ritmo',   name: 'Ritmo 96.5',         genre: 'Merengue clásico',           country: '🇩🇴', stream: 'https://stream-49.zeno.fm/y0br5ck4ququv' },
+    { id: 'fiera',   name: 'FieraMix',           genre: 'Bachata · Merengue',         country: '🇩🇴', stream: 'https://c11.radioboss.fm:18269/stream' },
+    { id: 'disco',   name: 'Disco 88.9',         genre: 'Disco · Clásicos',           country: '🇩🇴', stream: 'https://rgradio.net/disco89/disco89.mp3' },
+    { id: 'cdn',     name: 'CDN Radio',          genre: 'Noticias y análisis',        country: '🇩🇴', stream: 'https://play.cdnradio.com.do/cdnlive' },
+    { id: 'nueva',   name: 'La Nueva 106.9',     genre: 'Variedad musical',           country: '🇩🇴', stream: 'https://lanueva106.radioca.st/stream/1/' },
+    { id: 'rp',      name: 'Radio Paradise',     genre: 'Eclectic · Indie',           country: '🌍', stream: 'https://stream.radioparadise.com/mp3-192' },
+    { id: 'groove',  name: 'SomaFM Groove Salad', genre: 'Ambient · Chill',           country: '🌍', stream: 'https://ice1.somafm.com/groovesalad-128-mp3' },
+    { id: 'agent',   name: 'SomaFM Secret Agent', genre: 'Lounge · Downtempo',        country: '🌍', stream: 'https://ice1.somafm.com/secretagent-128-mp3' },
+  ];
+  const radio = { stations: RADIO_STATIONS, current: null, audio: null };
 
-  async function loadRadio() {
-    try {
-      radio.stations = await api('/api/radio/stations');
-      renderRadioGrid();
-    } catch (e) {
-      const g = $('radio-grid');
-      if (g) g.innerHTML = '<p class="radio-sub">La radio está apagando el fuego. Vuelve en un momento.</p>';
-    }
+  function loadRadio() {
+    renderRadioGrid();
   }
 
   function renderRadioGrid() {
@@ -606,7 +640,7 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
     if (radio.audio) { try { radio.audio.pause(); radio.audio.src = ''; } catch {} }
     radio.current = id;
-    radio.audio = new Audio('/api/radio/stream/' + encodeURIComponent(id));
+    radio.audio = new Audio(st.stream);
     radio.audio.volume = Number($('radio-vol')?.value || 75) / 100;
     radio.audio.crossOrigin = 'anonymous';
     radio.audio.play().then(() => setPlaying(true)).catch(() => {
@@ -627,7 +661,6 @@ $('admin-logout-btn').addEventListener('click', logout);
   $('radio-play')?.addEventListener('click', () => {
     if (radio.audio) { playStation(radio.current); }
     else if (radio.stations.length) { playStation(radio.stations[0].id); }
-    else { loadRadio().then(() => { if (radio.stations.length) playStation(radio.stations[0].id); }); }
   });
   $('radio-vol')?.addEventListener('input', (e) => {
     if (radio.audio) radio.audio.volume = Number(e.target.value) / 100;
@@ -679,36 +712,48 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
   });
 
-  /* ── Geolocalización + contador de visitas ─────────────────────── */
-  async function registerVisit() {
+  /* ── Geolocalización (IP) + contador de visitas local ──────────── */
+  async function fetchGeo() {
     try {
-      const geo = await api('/api/hub/visit', { method: 'POST' });
-      const el = $('footer-visitor');
-      if (el) {
-        if (geo && geo.country) {
-          el.innerHTML = `📍 <b>${esc(geo.flag)}</b> ${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
-        } else {
-          el.textContent = '📍 visitante local';
-        }
-      }
-      const chip = $('status-visitor-txt');
-      if (chip) {
-        if (geo && geo.country) {
-          chip.innerHTML = `📍 ${esc(geo.flag)} <b>${esc(geo.country)}</b>`;
-        } else {
-          chip.textContent = '📍 visitante local';
-        }
+      const r = await fetch('https://ipwho.is/');
+      const g = await r.json();
+      if (g && g.success !== false && g.country) {
+        return {
+          country: g.country,
+          city: g.city || '',
+          flag: (g.flag && g.flag.emoji) || '',
+          lat: g.latitude,
+          lon: g.longitude,
+        };
       }
     } catch {}
+    return null;
   }
-  async function loadStats() {
-    try {
-      const s = await api('/api/hub/stats');
-      const el = $('footer-visits');
-      if (el) el.innerHTML = `🔥 <b>${s.visits}</b> visita${s.visits === 1 ? '' : 's'}`;
-      const chip = $('status-visits-txt');
-      if (chip) chip.innerHTML = `🔥 <b>${s.visits}</b> visita${s.visits === 1 ? '' : 's'}`;
-    } catch {}
+
+  async function registerVisit() {
+    const geo = await fetchGeo();
+    const el = $('footer-visitor');
+    const chip = $('status-visitor-txt');
+    if (geo) {
+      const flag = geo.flag ? `<b>${esc(geo.flag)}</b> ` : '';
+      const where = `${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
+      if (el) el.innerHTML = `📍 ${flag}${where}`;
+      if (chip) chip.innerHTML = `📍 ${flag}<b>${esc(geo.country)}</b>`;
+    } else {
+      if (el) el.textContent = '📍 visitante local';
+      if (chip) chip.textContent = '📍 visitante local';
+    }
+  }
+
+  function loadStats() {
+    // Contador local de este navegador (sin backend, honesto).
+    const n = Number(localStorage.getItem('necio_visits') || 0) + 1;
+    localStorage.setItem('necio_visits', String(n));
+    const txt = `🔥 <b>${n}</b> visita${n === 1 ? '' : 's'}`;
+    const el = $('footer-visits');
+    if (el) el.innerHTML = txt;
+    const chip = $('status-visits-txt');
+    if (chip) chip.innerHTML = txt;
   }
 
   /* ── Clima + día/noche ─────────────────────────────────────────── */
@@ -768,31 +813,38 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
   }
 
+  function localWeatherFallback() {
+    const h = new Date().getHours();
+    const day = h >= 6 && h < 20;
+    weatherType = day ? 'sun' : 'night';
+    weatherInfo.label = day ? 'Día local' : 'Noche local';
+    weatherInfo.temp = null;
+    weatherInfo.isDay = null;
+  }
+
   async function initWeather() {
     applyTheme();
     try {
-      const w = await api('/api/hub/weather');
-      if (w && w.available && w.code != null) {
-        weatherType = wmoType(w.code) || weatherType;
-        weatherInfo.temp = w.temperature;
-        weatherInfo.code = w.code;
-        weatherInfo.label = wmoLabel(w.code);
-        weatherInfo.isDay = w.is_day;
-        applyTheme(w.is_day ? true : false);
+      const geo = await fetchGeo();
+      if (geo && geo.lat != null && geo.lon != null) {
+        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current_weather=true`);
+        const w = await r.json();
+        const cw = w && w.current_weather;
+        if (cw && cw.weathercode != null) {
+          weatherType = wmoType(cw.weathercode) || weatherType;
+          weatherInfo.temp = cw.temperature;
+          weatherInfo.code = cw.weathercode;
+          weatherInfo.label = wmoLabel(cw.weathercode);
+          weatherInfo.isDay = cw.is_day === 1;
+          applyTheme(cw.is_day === 1);
+        } else {
+          localWeatherFallback();
+        }
       } else {
-        const h = new Date().getHours();
-        const day = h >= 6 && h < 20;
-        weatherType = day ? 'sun' : 'night';
-        weatherInfo.label = day ? 'Día local' : 'Noche local';
-        weatherInfo.temp = null;
-        weatherInfo.isDay = null;
+        localWeatherFallback();
       }
     } catch {
-      const h = new Date().getHours();
-      const day = h >= 6 && h < 20;
-      weatherType = day ? 'sun' : 'night';
-      weatherInfo.label = day ? 'Día local' : 'Noche local';
-      weatherInfo.temp = null;
+      localWeatherFallback();
     }
     renderWeather();
   }

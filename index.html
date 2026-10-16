@@ -84,7 +84,7 @@
 
       <nav class="mastnav" id="rail-icons" aria-label="Secciones"></nav>
 
-      <button class="admin-link" id="admin-toggle" title="Administrar" aria-label="Administrar" style="display:none">
+      <button class="admin-link" id="admin-toggle" title="Administrar" aria-label="Administrar">
         <span id="admin-label">Admin</span>
       </button>
     </div>
@@ -108,7 +108,7 @@
     <div class="mascot-stage" aria-hidden="true">
       <div class="mascot-glow"></div>
       <div class="mascot-rock"></div>
-      <svg class="mascot" viewBox="0 0 360 400" role="img" aria-label="El Diablito, la mascota">
+      <svg class="mascot" viewBox="0 0 360 400" role="img" aria-label="El Diablo, la mascota">
         <defs>
           <radialGradient id="m-glow" cx="50%" cy="55%" r="55%">
             <stop offset="0%" stop-color="#ff8a2a" stop-opacity="0.6"/>
@@ -116,81 +116,122 @@
             <stop offset="100%" stop-color="#ff4d00" stop-opacity="0"/>
           </radialGradient>
           <linearGradient id="m-body" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#ff7a4d"/>
-            <stop offset="42%" stop-color="#e0281f"/>
-            <stop offset="100%" stop-color="#6f0f13"/>
+            <stop offset="0%" stop-color="#c81d25"/>
+            <stop offset="55%" stop-color="#8f1116"/>
+            <stop offset="100%" stop-color="#3d0609"/>
           </linearGradient>
           <linearGradient id="m-horn" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stop-color="#7a3d0a"/>
-            <stop offset="100%" stop-color="#ffc14d"/>
+            <stop offset="0%" stop-color="#3a1d05"/>
+            <stop offset="100%" stop-color="#e8b04b"/>
           </linearGradient>
-          <radialGradient id="m-belly" cx="50%" cy="38%" r="70%">
-            <stop offset="0%" stop-color="#ffe0b0" stop-opacity="0.95"/>
-            <stop offset="100%" stop-color="#ff9d55" stop-opacity="0.45"/>
+          <radialGradient id="m-belly" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#ffb46b" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#c95420" stop-opacity="0.35"/>
+          </radialGradient>
+          <linearGradient id="m-wing" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4d0c10"/>
+            <stop offset="100%" stop-color="#1c0405"/>
+          </linearGradient>
+          <radialGradient id="m-eye" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff3b0"/>
+            <stop offset="60%" stop-color="#ffc531"/>
+            <stop offset="100%" stop-color="#ff6a00"/>
           </radialGradient>
         </defs>
 
-        <circle cx="180" cy="210" r="180" fill="url(#m-glow)"/>
+        <circle cx="180" cy="205" r="180" fill="url(#m-glow)"/>
 
         <!-- cola -->
-        <path class="m-tail" d="M258 296 C 322 292, 340 244, 322 196" fill="none" stroke="#e0281f" stroke-width="15" stroke-linecap="round"/>
-        <path class="m-tail-tip" d="M322 196 L 300 198 L 318 226 Z" fill="#ffc14d"/>
+        <path class="m-tail" d="M236 300 C 306 292, 344 236, 322 178" fill="none" stroke="#8f1116" stroke-width="13" stroke-linecap="round"/>
+        <path class="m-tail-tip" d="M322 178 L 296 184 L 312 214 Z" fill="#e8b04b"/>
 
-        <!-- alas -->
-        <path class="m-wing m-wing-l" d="M116 118 C 58 84, 36 148, 76 176 C 100 188, 116 168, 116 118 Z" fill="#7c1216"/>
-        <path class="m-wing m-wing-r" d="M244 118 C 302 84, 324 148, 284 176 C 260 188, 244 168, 244 118 Z" fill="#7c1216"/>
+        <!-- alas de murciélago -->
+        <g class="m-wing m-wing-l">
+          <path d="M132 214 C 74 170, 30 150, 18 118 C 44 130, 66 128, 92 120 C 84 104, 66 92, 56 66 C 84 84, 112 92, 128 106 C 122 92, 112 84, 112 68 C 128 88, 148 104, 158 122 Z" fill="url(#m-wing)"/>
+        </g>
+        <g class="m-wing m-wing-r">
+          <path d="M228 214 C 286 170, 330 150, 342 118 C 316 130, 294 128, 268 120 C 276 104, 294 92, 304 66 C 276 84, 248 92, 232 106 C 238 92, 248 84, 248 68 C 232 88, 212 104, 202 122 Z" fill="url(#m-wing)"/>
+        </g>
 
-        <!-- cuernos -->
-        <path class="m-horn m-horn-l" d="M116 92 C 106 54, 128 36, 152 52 C 146 74, 136 88, 128 96 Z" fill="url(#m-horn)"/>
-        <path class="m-horn m-horn-r" d="M244 92 C 254 54, 232 36, 208 52 C 214 74, 224 88, 232 96 Z" fill="url(#m-horn)"/>
+        <!-- cuernos grandes -->
+        <g class="m-horn m-horn-l">
+          <path d="M134 84 C 120 44, 84 28, 62 22 C 72 46, 92 66, 116 92 Z" fill="url(#m-horn)"/>
+          <path d="M94 44 C 99 36, 106 32, 114 32" stroke="#3a1d05" stroke-width="3" fill="none" opacity="0.6"/>
+        </g>
+        <g class="m-horn m-horn-r">
+          <path d="M226 84 C 240 44, 276 28, 298 22 C 288 46, 268 66, 244 92 Z" fill="url(#m-horn)"/>
+          <path d="M266 44 C 261 36, 254 32, 246 32" stroke="#3a1d05" stroke-width="3" fill="none" opacity="0.6"/>
+        </g>
 
-        <!-- cabeza (grande, estilo chibi) -->
-        <ellipse cx="180" cy="158" rx="112" ry="104" fill="url(#m-body)"/>
-        <ellipse cx="180" cy="212" rx="70" ry="66" fill="url(#m-belly)"/>
+        <!-- orejas puntiagudas -->
+        <path d="M112 112 L 82 92 L 112 124 Z" fill="#8f1116"/>
+        <path d="M248 112 L 278 92 L 248 124 Z" fill="#8f1116"/>
 
-        <!-- mejillas (rubor) -->
-        <ellipse cx="118" cy="196" rx="16" ry="10" fill="#ff7a4d" opacity="0.5"/>
-        <ellipse cx="242" cy="196" rx="16" ry="10" fill="#ff7a4d" opacity="0.5"/>
+        <!-- cabeza -->
+        <ellipse cx="180" cy="126" rx="64" ry="58" fill="url(#m-body)"/>
+        <!-- mandíbula / mentón -->
+        <path d="M150 160 Q 180 186 210 160 Q 180 178 150 160 Z" fill="#5c0a0d"/>
 
-        <!-- ojos -->
+        <!-- ojos (brillantes, pupila en hendidura) -->
         <g class="m-eyes">
-          <ellipse cx="140" cy="146" rx="20" ry="27" fill="#ffd23e"/>
-          <ellipse cx="220" cy="146" rx="20" ry="27" fill="#ffd23e"/>
-          <circle cx="140" cy="152" r="9.5" fill="#2a0a0a"/>
-          <circle cx="220" cy="152" r="9.5" fill="#2a0a0a"/>
-          <circle cx="144" cy="146" r="3.6" fill="#fff" opacity="0.9"/>
-          <circle cx="224" cy="146" r="3.6" fill="#fff" opacity="0.9"/>
+          <ellipse cx="152" cy="118" rx="17" ry="13" fill="url(#m-eye)"/>
+          <ellipse cx="208" cy="118" rx="17" ry="13" fill="url(#m-eye)"/>
+          <ellipse cx="152" cy="118" rx="4" ry="12" fill="#1a0505"/>
+          <ellipse cx="208" cy="118" rx="4" ry="12" fill="#1a0505"/>
+          <circle cx="148" cy="113" r="3" fill="#fff" opacity="0.85"/>
+          <circle cx="204" cy="113" r="3" fill="#fff" opacity="0.85"/>
         </g>
 
         <!-- párpados (parpadeo) -->
         <g class="m-lids">
-          <ellipse cx="140" cy="146" rx="20" ry="27" fill="#6f0f13"/>
-          <ellipse cx="220" cy="146" rx="20" ry="27" fill="#6f0f13"/>
+          <ellipse cx="152" cy="118" rx="17" ry="13" fill="#3d0609"/>
+          <ellipse cx="208" cy="118" rx="17" ry="13" fill="#3d0609"/>
         </g>
 
-        <!-- cejas traviesas -->
-        <path d="M118 116 Q 140 106, 162 118" stroke="#4d0c10" stroke-width="7" fill="none" stroke-linecap="round"/>
-        <path d="M242 116 Q 220 106, 198 118" stroke="#4d0c10" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <!-- cejas fruncidas -->
+        <path d="M134 96 L 172 110" stroke="#2b0305" stroke-width="8" stroke-linecap="round"/>
+        <path d="M226 96 L 188 110" stroke="#2b0305" stroke-width="8" stroke-linecap="round"/>
 
-        <!-- sonrisa con colmillos -->
-        <path d="M150 190 Q 180 214, 210 190" stroke="#4d0c10" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <path d="M160 194 L 167 194 L 163.5 207 Z" fill="#fff6e8"/>
-        <path d="M200 194 L 193 194 L 196.5 207 Z" fill="#fff6e8"/>
+        <!-- nariz -->
+        <path d="M175 136 L 185 136 L 180 145 Z" fill="#2b0305"/>
 
-        <!-- cuerpo -->
+        <!-- sonrisa amenazante con colmillos -->
+        <path d="M152 156 Q 180 176 208 156" stroke="#2b0305" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M158 158 L 165 158 L 161 174 Z" fill="#fff6e8"/>
+        <path d="M202 158 L 195 158 L 199 174 Z" fill="#fff6e8"/>
+        <path d="M170 172 L 177 172 L 173 158 Z" fill="#fff6e8"/>
+        <path d="M190 172 L 183 172 L 187 158 Z" fill="#fff6e8"/>
+
+        <!-- perilla -->
+        <path d="M180 176 L 175 198 L 185 198 Z" fill="#5c0a0d"/>
+
+        <!-- torso -->
         <g class="m-torso">
-          <ellipse cx="180" cy="338" rx="60" ry="56" fill="url(#m-body)"/>
-          <ellipse cx="180" cy="352" rx="34" ry="30" fill="url(#m-belly)" opacity="0.7"/>
+          <ellipse cx="180" cy="266" rx="80" ry="92" fill="url(#m-body)"/>
+          <ellipse cx="180" cy="284" rx="48" ry="54" fill="url(#m-belly)" opacity="0.6"/>
+          <!-- pectorales -->
+          <path d="M180 232 L 150 246 Q 160 256 180 250 Z" fill="#5c0a0d" opacity="0.4"/>
+          <path d="M180 232 L 210 246 Q 200 256 180 250 Z" fill="#5c0a0d" opacity="0.4"/>
+          <!-- brazos con garras -->
+          <path d="M104 250 C 88 300, 92 336, 110 352 L 122 344 C 108 328, 106 296, 120 262 Z" fill="url(#m-body)"/>
+          <path d="M256 250 C 272 300, 268 336, 250 352 L 238 344 C 252 328, 254 296, 240 262 Z" fill="url(#m-body)"/>
+          <!-- garras -->
+          <path d="M104 348 L 96 362 L 110 354 Z" fill="#e8b04b"/>
+          <path d="M114 350 L 112 364 L 122 354 Z" fill="#e8b04b"/>
+          <path d="M256 348 L 264 362 L 250 354 Z" fill="#e8b04b"/>
+          <path d="M246 350 L 248 364 L 238 354 Z" fill="#e8b04b"/>
         </g>
 
-        <!-- pies -->
-        <ellipse cx="146" cy="392" rx="20" ry="10" fill="#6f0f13"/>
-        <ellipse cx="214" cy="392" rx="20" ry="10" fill="#6f0f13"/>
+        <!-- piernas con pezuñas hendidas -->
+        <path d="M140 344 L 132 384 L 152 384 L 150 344 Z" fill="url(#m-body)"/>
+        <path d="M220 344 L 228 384 L 208 384 L 210 344 Z" fill="url(#m-body)"/>
+        <path d="M132 384 L 152 384 L 146 392 L 138 392 Z" fill="#2b0305"/>
+        <path d="M228 384 L 208 384 L 214 392 L 222 392 Z" fill="#2b0305"/>
 
         <!-- tridente -->
         <g class="m-trident">
-          <line x1="252" y1="360" x2="292" y2="200" stroke="#5c3a12" stroke-width="8" stroke-linecap="round"/>
-          <path d="M292 200 L 276 186 L 292 206 L 308 186 L 292 200 Z" fill="#c9a227"/>
+          <line x1="252" y1="354" x2="300" y2="170" stroke="#3a1d05" stroke-width="9" stroke-linecap="round"/>
+          <path d="M300 170 L 282 154 L 300 176 L 318 154 L 300 170 Z" fill="#e8b04b"/>
         </g>
       </svg>
     </div>
@@ -234,8 +275,6 @@
   <!-- ── Barra de admin ────────────────────────────────────────────── -->
   <div class="admin-bar hidden" id="admin-bar">
     <button class="btn btn-ghost" id="admin-profile-btn">Perfil</button>
-    <button class="btn btn-ghost" id="admin-security-btn">Seguridad (2FA)</button>
-    <button class="btn btn-ghost" id="admin-token-btn">Token API</button>
     <button class="btn btn-ghost" id="admin-logout-btn">Salir</button>
   </div>
 
