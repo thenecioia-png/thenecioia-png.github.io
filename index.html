@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>El Necio Digital — La Guarida</title>
+  <meta name="description" content="El Necio Digital — un refugio digital en penumbra donde viven todas mis obras." />
+  <meta name="theme-color" content="#0a0604" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z' fill='%23c81d25'/%3E%3Ccircle cx='13' cy='19' r='2.4' fill='%23ffd23e'/%3E%3Ccircle cx='19' cy='19' r='2.4' fill='%23ffd23e'/%3E%3C/svg%3E" />
+  <meta property="og:title" content="El Necio Digital — La Guarida" />
+  <meta property="og:description" content="Webs, canales, redes, apps, diplomas y proyectos, reunidos en una guarida digital de fantasía oscura." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="hub.css" />
+</head>
+<body>
+  <!-- ── Capas de ambiente ─────────────────────────────────────────── -->
+  <div class="bg-fire" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+
+  <svg class="wood-bg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="wood-base" x1="0" y1="0" x2="0.15" y2="1">
+        <stop offset="0%" stop-color="#160c06"/>
+        <stop offset="45%" stop-color="#0e0704"/>
+        <stop offset="100%" stop-color="#070302"/>
+      </linearGradient>
+      <filter id="wood-grain1" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.18" numOctaves="5" seed="8" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.26  0 0 0 0 0.12  0 0 0 0 0.05  0.55 0 0 0 0"/>
+      </filter>
+      <filter id="wood-grain2" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.38" numOctaves="4" seed="23" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 1.0  0 0 0 0 0.30  0 0 0 0 0.05  0.30 0 0 0 0"/>
+      </filter>
+      <radialGradient id="wood-emberlight" cx="50%" cy="82%" r="75%">
+        <stop offset="0%" stop-color="#ff6a1a" stop-opacity="0.30"/>
+        <stop offset="45%" stop-color="#b83a00" stop-opacity="0.10"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="wood-vignette" cx="50%" cy="40%" r="85%">
+        <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+        <stop offset="62%" stop-color="#000000" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.78"/>
+      </radialGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#wood-base)"/>
+    <rect width="100%" height="100%" filter="url(#wood-grain1)"/>
+    <rect width="100%" height="100%" filter="url(#wood-grain2)"/>
+    <rect width="100%" height="100%" fill="url(#wood-emberlight)"/>
+    <rect width="100%" height="100%" fill="url(#wood-vignette)"/>
+  </svg>
+
+  <div class="sky" id="sky" aria-hidden="true"><div class="sun-moon" id="sun-moon"></div></div>
+  <div class="thunder-flash" id="thunder-flash" aria-hidden="true"></div>
+  <canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── Masthead editorial ────────────────────────────────────────── -->
+  <header class="masthead" id="topnav">
+    <div class="folio">
+      <div class="folio-item" id="status-weather" title="Clima en tu zona">
+        <span class="folio-ico" id="status-weather-ico"></span>
+        <span id="status-weather-txt">Clima…</span>
+      </div>
+      <span class="folio-sep" aria-hidden="true"></span>
+      <div class="folio-item" id="status-visits" title="Visitas registradas"><span id="status-visits-txt"><b>0</b> visitas</span></div>
+      <span class="folio-sep" aria-hidden="true"></span>
+      <div class="folio-item" id="status-visitor" title="Desde dónde nos visitas"><span id="status-visitor-txt">visitante local</span></div>
+    </div>
+
+    <div class="mastrow">
+      <a class="brand" href="#top" title="Volver al inicio">
+        <svg class="sigil" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z" fill="#c81d25"/>
+          <circle cx="13" cy="19" r="2.4" fill="#ffd23e"/>
+          <circle cx="19" cy="19" r="2.4" fill="#ffd23e"/>
+          <path d="M13 25 C 15 27, 17 27, 19 25" stroke="#f3e9d8" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-word" id="nav-name">El Necio Digital</span>
+      </a>
+      <span id="nav-emoji" hidden></span>
+
+      <nav class="mastnav" id="rail-icons" aria-label="Secciones"></nav>
+
+      <button class="admin-link" id="admin-toggle" title="Administrar" aria-label="Administrar" style="display:none">
+        <span id="admin-label">Admin</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── PORTADA ───────────────────────────────────────────────────── -->
+  <header class="hero" id="top">
+    <div class="hero-ember" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <p class="hero-kicker" id="hero-tagline">Todo lo mío, en un solo lugar.</p>
+      <h1 class="hero-title" id="hero-name">El Necio Digital</h1>
+      <p class="hero-bio" id="hero-bio"></p>
+      <div class="hero-cta">
+        <a class="cta" href="#sections">
+          <span>Explorar la guarida</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="mascot-stage" aria-hidden="true">
+      <div class="mascot-glow"></div>
+      <div class="mascot-rock"></div>
+      <svg class="mascot" viewBox="0 0 360 400" role="img" aria-label="El Diablito, la mascota">
+        <defs>
+          <radialGradient id="m-glow" cx="50%" cy="55%" r="55%">
+            <stop offset="0%" stop-color="#ff8a2a" stop-opacity="0.6"/>
+            <stop offset="55%" stop-color="#ff4d00" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="#ff4d00" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="m-body" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff7a4d"/>
+            <stop offset="42%" stop-color="#e0281f"/>
+            <stop offset="100%" stop-color="#6f0f13"/>
+          </linearGradient>
+          <linearGradient id="m-horn" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#7a3d0a"/>
+            <stop offset="100%" stop-color="#ffc14d"/>
+          </linearGradient>
+          <radialGradient id="m-belly" cx="50%" cy="38%" r="70%">
+            <stop offset="0%" stop-color="#ffe0b0" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#ff9d55" stop-opacity="0.45"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="180" cy="210" r="180" fill="url(#m-glow)"/>
+
+        <!-- cola -->
+        <path class="m-tail" d="M258 296 C 322 292, 340 244, 322 196" fill="none" stroke="#e0281f" stroke-width="15" stroke-linecap="round"/>
+        <path class="m-tail-tip" d="M322 196 L 300 198 L 318 226 Z" fill="#ffc14d"/>
+
+        <!-- alas -->
+        <path class="m-wing m-wing-l" d="M116 118 C 58 84, 36 148, 76 176 C 100 188, 116 168, 116 118 Z" fill="#7c1216"/>
+        <path class="m-wing m-wing-r" d="M244 118 C 302 84, 324 148, 284 176 C 260 188, 244 168, 244 118 Z" fill="#7c1216"/>
+
+        <!-- cuernos -->
+        <path class="m-horn m-horn-l" d="M116 92 C 106 54, 128 36, 152 52 C 146 74, 136 88, 128 96 Z" fill="url(#m-horn)"/>
+        <path class="m-horn m-horn-r" d="M244 92 C 254 54, 232 36, 208 52 C 214 74, 224 88, 232 96 Z" fill="url(#m-horn)"/>
+
+        <!-- cabeza (grande, estilo chibi) -->
+        <ellipse cx="180" cy="158" rx="112" ry="104" fill="url(#m-body)"/>
+        <ellipse cx="180" cy="212" rx="70" ry="66" fill="url(#m-belly)"/>
+
+        <!-- mejillas (rubor) -->
+        <ellipse cx="118" cy="196" rx="16" ry="10" fill="#ff7a4d" opacity="0.5"/>
+        <ellipse cx="242" cy="196" rx="16" ry="10" fill="#ff7a4d" opacity="0.5"/>
+
+        <!-- ojos -->
+        <g class="m-eyes">
+          <ellipse cx="140" cy="146" rx="20" ry="27" fill="#ffd23e"/>
+          <ellipse cx="220" cy="146" rx="20" ry="27" fill="#ffd23e"/>
+          <circle cx="140" cy="152" r="9.5" fill="#2a0a0a"/>
+          <circle cx="220" cy="152" r="9.5" fill="#2a0a0a"/>
+          <circle cx="144" cy="146" r="3.6" fill="#fff" opacity="0.9"/>
+          <circle cx="224" cy="146" r="3.6" fill="#fff" opacity="0.9"/>
+        </g>
+
+        <!-- párpados (parpadeo) -->
+        <g class="m-lids">
+          <ellipse cx="140" cy="146" rx="20" ry="27" fill="#6f0f13"/>
+          <ellipse cx="220" cy="146" rx="20" ry="27" fill="#6f0f13"/>
+        </g>
+
+        <!-- cejas traviesas -->
+        <path d="M118 116 Q 140 106, 162 118" stroke="#4d0c10" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M242 116 Q 220 106, 198 118" stroke="#4d0c10" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+        <!-- sonrisa con colmillos -->
+        <path d="M150 190 Q 180 214, 210 190" stroke="#4d0c10" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M160 194 L 167 194 L 163.5 207 Z" fill="#fff6e8"/>
+        <path d="M200 194 L 193 194 L 196.5 207 Z" fill="#fff6e8"/>
+
+        <!-- cuerpo -->
+        <g class="m-torso">
+          <ellipse cx="180" cy="338" rx="60" ry="56" fill="url(#m-body)"/>
+          <ellipse cx="180" cy="352" rx="34" ry="30" fill="url(#m-belly)" opacity="0.7"/>
+        </g>
+
+        <!-- pies -->
+        <ellipse cx="146" cy="392" rx="20" ry="10" fill="#6f0f13"/>
+        <ellipse cx="214" cy="392" rx="20" ry="10" fill="#6f0f13"/>
+
+        <!-- tridente -->
+        <g class="m-trident">
+          <line x1="252" y1="360" x2="292" y2="200" stroke="#5c3a12" stroke-width="8" stroke-linecap="round"/>
+          <path d="M292 200 L 276 186 L 292 206 L 308 186 L 292 200 Z" fill="#c9a227"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true"><span></span></div>
+  </header>
+
+  <!-- ── CONTENIDOS (capítulos editoriales) ────────────────────────── -->
+  <main class="sections" id="sections"></main>
+
+  <!-- ── Radio (dial) ──────────────────────────────────────────────── -->
+  <aside class="radio-widget" id="section-radio">
+    <button class="radio-toggle" id="radio-toggle" aria-expanded="false" aria-controls="radio-body">
+      <span class="radio-knob"><span class="radio-dot"></span></span>
+      <span class="radio-label">Radio en vivo</span>
+      <svg class="radio-caret" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="radio-body" id="radio-body">
+      <div class="radio-player">
+        <button class="radio-play" id="radio-play" aria-label="Reproducir o pausar">
+          <svg class="ico-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="ico-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+        <div class="radio-now">
+          <span class="radio-now-flag" id="radio-flag"></span>
+          <div class="radio-now-text">
+            <div class="radio-now-name" id="radio-name">Elige una emisora</div>
+            <div class="radio-now-genre" id="radio-genre">—</div>
+          </div>
+        </div>
+        <div class="radio-eq" id="radio-eq"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="radio-vol-wrap">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <input type="range" class="radio-vol" id="radio-vol" min="0" max="100" value="75" title="Volumen"/>
+      </div>
+      <div class="radio-grid" id="radio-grid"></div>
+    </div>
+  </aside>
+
+  <!-- ── Barra de admin ────────────────────────────────────────────── -->
+  <div class="admin-bar hidden" id="admin-bar">
+    <button class="btn btn-ghost" id="admin-profile-btn">Perfil</button>
+    <button class="btn btn-ghost" id="admin-security-btn">Seguridad (2FA)</button>
+    <button class="btn btn-ghost" id="admin-token-btn">Token API</button>
+    <button class="btn btn-ghost" id="admin-logout-btn">Salir</button>
+  </div>
+
+  <!-- ── Pie (colofón) ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-mark">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+        <path d="M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z" fill="#c81d25"/>
+        <circle cx="13" cy="19" r="2.2" fill="#ffd23e"/>
+        <circle cx="19" cy="19" r="2.2" fill="#ffd23e"/>
+        <path d="M13 24 C 15 26, 17 26, 19 24" stroke="#f3e9d8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span id="footer-name">El Necio Digital</span>
+    </div>
+    <div class="footer-stats">
+      <span class="footer-stat" id="footer-visits" title="Visitas registradas"><b>0</b> visitas</span>
+      <span class="footer-stat" id="footer-visitor" title="De dónde nos visitan">visitante local</span>
+    </div>
+    <p class="footer-sub">Hecho a fuego lento. © <span id="footer-year"></span></p>
+  </footer>
+
+  <!-- ── Asistente "El Diablito" ───────────────────────────────────── -->
+  <button class="chat-fab" id="chat-fab" aria-label="Abrir asistente" title="Habla con El Diablito" style="display:none">
+    <span class="chat-fab-glow"></span>
+    <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
+      <path d="M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z" fill="#c81d25"/>
+      <circle cx="13" cy="19" r="2.4" fill="#ffd23e"/>
+      <circle cx="19" cy="19" r="2.4" fill="#ffd23e"/>
+      <path d="M13 25 C 15 27, 17 27, 19 25" stroke="#f3e9d8" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <div class="chat-panel hidden" id="chat-panel">
+    <div class="chat-head">
+      <span class="chat-avatar">
+        <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
+          <path d="M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z" fill="#c81d25"/>
+          <circle cx="13" cy="19" r="2.2" fill="#ffd23e"/>
+          <circle cx="19" cy="19" r="2.2" fill="#ffd23e"/>
+          <path d="M13 24 C 15 26, 17 26, 19 24" stroke="#f3e9d8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div class="chat-head-text">
+        <div class="chat-name">El Diablito</div>
+        <div class="chat-status">asistente de la guarida</div>
+      </div>
+      <button class="chat-close" id="chat-close" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="chat-msg bot">¡Hola! Soy El Diablito, el diablillo travieso de la guarida. Pregúntame lo que quieras.</div>
+    </div>
+    <form class="chat-form" id="chat-form" autocomplete="off">
+      <input type="text" id="chat-input" placeholder="Pregúntale algo…" maxlength="500"/>
+      <button type="submit" class="chat-send" aria-label="Enviar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- ── La mascota errante (máquina de estados) ───────────────────── -->
+  <div class="wanderer" id="wanderer" aria-hidden="true">
+    <div class="wanderer-say" id="wanderer-say"></div>
+    <svg class="wanderer-svg" viewBox="0 0 120 120">
+      <defs>
+        <linearGradient id="w-body" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ff5a3c"/>
+          <stop offset="1" stop-color="#b3111c"/>
+        </linearGradient>
+        <linearGradient id="w-horn" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#ffc14d"/>
+          <stop offset="1" stop-color="#8a5a12"/>
+        </linearGradient>
+      </defs>
+
+      <!-- horca / tridente (3 púas) -->
+      <g class="w-trident">
+        <line x1="100" y1="106" x2="100" y2="28" stroke="#6b4513" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M100 28 L 100 10 M100 28 L 85 18 M100 28 L 115 18" stroke="#6b4513" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M100 10 L 95 2 L 101 8 Z" fill="#ffc14d"/>
+        <path d="M85 18 L 78 12 L 85 22 Z" fill="#ffc14d"/>
+        <path d="M115 18 L 122 12 L 115 22 Z" fill="#ffc14d"/>
+      </g>
+
+      <!-- cola con punta de flecha -->
+      <path class="w-tail" d="M80 94 C 108 98, 116 74, 106 52" fill="none" stroke="#d61f16" stroke-width="7" stroke-linecap="round"/>
+      <path d="M106 52 L 95 49 L 104 63 Z" fill="#ffc14d"/>
+
+      <!-- alas de murciélago -->
+      <path class="w-wing" d="M18 46 C 2 34, -2 56, 14 66 C 22 70, 30 60, 18 46 Z" fill="#7c1216"/>
+      <path class="w-wing" d="M102 46 C 118 34, 122 56, 106 66 C 98 70, 90 60, 102 46 Z" fill="#7c1216"/>
+
+      <!-- cuerpo -->
+      <ellipse class="w-body" cx="60" cy="96" rx="25" ry="20" fill="url(#w-body)"/>
+
+      <!-- cabeza -->
+      <ellipse cx="60" cy="56" rx="38" ry="33" fill="url(#w-body)"/>
+      <ellipse cx="60" cy="72" rx="23" ry="20" fill="#ffd9a0" opacity="0.35"/>
+
+      <!-- cuernos grandes y curvos -->
+      <path class="w-horn" d="M38 32 C 26 20, 26 4, 44 4 C 40 14, 40 24, 43 30 Z" fill="url(#w-horn)"/>
+      <path class="w-horn" d="M82 32 C 94 20, 94 4, 76 4 C 80 14, 80 24, 77 30 Z" fill="url(#w-horn)"/>
+
+      <!-- mejillas -->
+      <ellipse cx="38" cy="66" rx="8" ry="5" fill="#ff7a4d" opacity="0.5"/>
+      <ellipse cx="82" cy="66" rx="8" ry="5" fill="#ff7a4d" opacity="0.5"/>
+
+      <!-- ojos grandes -->
+      <g class="w-eyes">
+        <ellipse cx="45" cy="54" rx="9" ry="11" fill="#fff7e6"/>
+        <ellipse cx="75" cy="54" rx="9" ry="11" fill="#fff7e6"/>
+        <circle cx="46" cy="56" r="4.5" fill="#2a0a0a"/>
+        <circle cx="74" cy="56" r="4.5" fill="#2a0a0a"/>
+        <circle cx="47.5" cy="53.5" r="1.8" fill="#fff"/>
+        <circle cx="75.5" cy="53.5" r="1.8" fill="#fff"/>
+      </g>
+
+      <!-- párpados (parpadeo) -->
+      <g class="w-lids">
+        <ellipse cx="45" cy="54" rx="9" ry="11" fill="#b3111c"/>
+        <ellipse cx="75" cy="54" rx="9" ry="11" fill="#b3111c"/>
+      </g>
+
+      <!-- cejas pícaras -->
+      <path d="M34 42 Q 45 36, 56 40" stroke="#4d0c10" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M86 42 Q 75 36, 64 40" stroke="#4d0c10" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+      <!-- sonrisa con colmillos -->
+      <path d="M47 66 Q 60 77, 73 66" stroke="#4d0c10" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M52 68 L 56 68 L 54 74 Z" fill="#fff6e8"/>
+      <path d="M68 68 L 64 68 L 66 74 Z" fill="#fff6e8"/>
+
+      <!-- perilla (barba de chivo) -->
+      <path d="M56 78 L 64 78 L 60 88 Z" fill="#b3111c"/>
+    </svg>
+  </div>
+
+  <!-- ── Modales de administración ─────────────────────────────────── -->
+  <div class="modal-backdrop hidden" id="login-modal">
+    <div class="modal">
+      <button class="modal-close" data-close="login-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 class="modal-title">Acceso a la guarida</h2>
+      <p class="modal-sub">Entra para cuidar tus obras.</p>
+      <div class="modal-error hidden" id="login-error"></div>
+      <form id="login-form" autocomplete="off">
+        <label class="field"><span>Email</span><input type="email" id="login-email" placeholder="tu@email.com" required /></label>
+        <label class="field"><span>Contraseña</span><input type="password" id="login-password" placeholder="••••••••" required /></label>
+        <div class="field hidden" id="login-2fa-wrap">
+          <span>Código de verificación (2FA)</span>
+          <input type="text" id="login-2fa" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="item-modal">
+    <div class="modal">
+      <button class="modal-close" data-close="item-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 class="modal-title" id="item-modal-title">Agregar obra</h2>
+      <div class="modal-error hidden" id="item-error"></div>
+      <form id="item-form" autocomplete="off">
+        <input type="hidden" id="item-id" />
+        <div class="field-row">
+          <label class="field"><span>Sección</span><select id="item-section"></select></label>
+          <label class="field"><span>Icono</span><input type="text" id="item-icon" placeholder="🔗" maxlength="4" /></label>
+        </div>
+        <label class="field"><span>Título</span><input type="text" id="item-title" placeholder="Ej. YouTube" required /></label>
+        <label class="field"><span>Enlace (URL)</span><input type="url" id="item-url" placeholder="https://…" /></label>
+        <label class="field"><span>Descripción</span><textarea id="item-description" rows="2" placeholder="Opcional"></textarea></label>
+        <label class="field"><span>Color de acento</span>
+          <div class="color-row"><input type="color" id="item-color" value="#ff4d00" /><input type="text" id="item-color-text" placeholder="#ff4d00" /></div>
+        </label>
+        <label class="switch-row"><span>Visible para el público</span><input type="checkbox" id="item-visibility" /><span class="switch"></span></label>
+        <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="profile-modal">
+    <div class="modal">
+      <button class="modal-close" data-close="profile-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 class="modal-title">Editar perfil</h2>
+      <div class="modal-error hidden" id="profile-error"></div>
+      <form id="profile-form" autocomplete="off">
+        <div class="field-row">
+          <label class="field"><span>Nombre / Marca</span><input type="text" id="profile-name" required /></label>
+          <label class="field"><span>Icono</span><input type="text" id="profile-emoji" maxlength="4" placeholder="⚡" /></label>
+        </div>
+        <label class="field"><span>Frase (kicker)</span><input type="text" id="profile-tagline" placeholder="Todo lo mío, en un solo lugar." /></label>
+        <label class="field"><span>Biografía</span><textarea id="profile-bio" rows="3" placeholder="Un par de frases sobre ti…"></textarea></label>
+        <label class="field"><span>Color principal</span>
+          <div class="color-row"><input type="color" id="profile-accent" value="#ff4d00" /><input type="text" id="profile-accent-text" placeholder="#ff4d00" /></div>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Guardar perfil</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="security-modal">
+    <div class="modal">
+      <button class="modal-close" data-close="security-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 class="modal-title">Seguridad — doble autenticación</h2>
+      <p class="modal-sub">Protege tu cuenta con un código de tu app de autenticación.</p>
+      <div class="modal-error hidden" id="security-error"></div>
+      <div id="security-status" class="security-status"></div>
+      <div id="security-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="hub.js"></script>
+</body>
+</html>
