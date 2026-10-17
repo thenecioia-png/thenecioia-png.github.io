@@ -304,28 +304,28 @@ const STATIC_DATA = {
     { id: 18, section: 'apps', title: 'The Necio Cobranza', url: 'https://play.google.com/store/apps/details?id=com.thenecio.cobranza', icon: '💰', color: '#fbbc04', description: 'App de gestión de cobranza' },
 
     // ── Diplomas (ProDominicana Capacita) ──────────────────
-    { id: 19, section: 'diplomas', title: 'Exportar Paso a Paso', url: 'https://thenecioia-png.github.io/diplomas/cert_curso3.pdf', icon: '📜', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 20, section: 'diplomas', title: 'Aspectos Fundamentales de E-Commerce', url: 'https://thenecioia-png.github.io/diplomas/cert_curso4.pdf', icon: '🛒', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 21, section: 'diplomas', title: 'Los Incoterms', url: 'https://thenecioia-png.github.io/diplomas/cert_curso6.pdf', icon: '🚢', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 22, section: 'diplomas', title: 'La Gestión Internacional en Procesos de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso7.pdf', icon: '🌐', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 23, section: 'diplomas', title: 'Cultura y Pensamiento Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso8.pdf', icon: '🧭', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 24, section: 'diplomas', title: 'Comportamiento del Consumidor', url: 'https://thenecioia-png.github.io/diplomas/cert_curso9.pdf', icon: '🛍️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 25, section: 'diplomas', title: 'Desarrollo del Plan Estratégico para el Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso10.pdf', icon: '🎯', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 26, section: 'diplomas', title: 'Internacionalización de Pymes', url: 'https://thenecioia-png.github.io/diplomas/cert_curso11.pdf', icon: '🏢', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 27, section: 'diplomas', title: 'Ley 84-99: Reactivación y Fomento de las Exportaciones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso13.pdf', icon: '⚖️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 28, section: 'diplomas', title: 'Gestión de Envase, Empaque y Embalaje de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso14.pdf', icon: '📦', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 29, section: 'diplomas', title: 'Gestión de Riesgos en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso15.pdf', icon: '🛡️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 30, section: 'diplomas', title: 'Inteligencia Artificial en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso18.pdf', icon: '🤖', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 31, section: 'diplomas', title: 'Inteligencia de Mercados', url: 'https://thenecioia-png.github.io/diplomas/cert_curso19.pdf', icon: '📊', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 32, section: 'diplomas', title: 'Branding y Posicionamiento de Marca en Entornos Globales', url: 'https://thenecioia-png.github.io/diplomas/cert_curso35.pdf', icon: '🏷️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 33, section: 'diplomas', title: 'Marketing en Redes Sociales para la Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso37.pdf', icon: '📣', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
-    { id: 34, section: 'diplomas', title: 'Aspectos Legales y Protección de la Propiedad Intelectual', url: 'https://thenecioia-png.github.io/diplomas/cert_curso38.pdf', icon: '©️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'public' },
+    { id: 19, section: 'diplomas', title: 'Exportar Paso a Paso', url: 'https://thenecioia-png.github.io/diplomas/cert_curso3.pdf', icon: '📜', color: '#ff4d00', description: 'Guía práctica del proceso exportador, paso a paso · certificado PDF', visibility: 'public' },
+    { id: 20, section: 'diplomas', title: 'Aspectos Fundamentales de E-Commerce', url: 'https://thenecioia-png.github.io/diplomas/cert_curso4.pdf', icon: '🛒', color: '#ff4d00', description: 'Bases del comercio electrónico internacional · certificado PDF', visibility: 'public' },
+    { id: 21, section: 'diplomas', title: 'Los Incoterms', url: 'https://thenecioia-png.github.io/diplomas/cert_curso6.pdf', icon: '🚢', color: '#ff4d00', description: 'Reglas internacionales de comercio (Incoterms) · certificado PDF', visibility: 'public' },
+    { id: 22, section: 'diplomas', title: 'La Gestión Internacional en Procesos de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso7.pdf', icon: '🌐', color: '#ff4d00', description: 'Gestión de operaciones de exportación internacional · certificado PDF', visibility: 'public' },
+    { id: 23, section: 'diplomas', title: 'Cultura y Pensamiento Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso8.pdf', icon: '🧭', color: '#ff4d00', description: 'Mentalidad y cultura para exportar · certificado PDF', visibility: 'public' },
+    { id: 24, section: 'diplomas', title: 'Comportamiento del Consumidor', url: 'https://thenecioia-png.github.io/diplomas/cert_curso9.pdf', icon: '🛍️', color: '#ff4d00', description: 'Cómo decide y compra el consumidor · certificado PDF', visibility: 'public' },
+    { id: 25, section: 'diplomas', title: 'Desarrollo del Plan Estratégico para el Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso10.pdf', icon: '🎯', color: '#ff4d00', description: 'Cómo armar un plan estratégico de exportación · certificado PDF', visibility: 'public' },
+    { id: 26, section: 'diplomas', title: 'Internacionalización de Pymes', url: 'https://thenecioia-png.github.io/diplomas/cert_curso11.pdf', icon: '🏢', color: '#ff4d00', description: 'Llevar tu pyme a mercados globales · certificado PDF', visibility: 'public' },
+    { id: 27, section: 'diplomas', title: 'Ley 84-99: Reactivación y Fomento de las Exportaciones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso13.pdf', icon: '⚖️', color: '#ff4d00', description: 'Marco legal del fomento exportador dominicano · certificado PDF', visibility: 'public' },
+    { id: 28, section: 'diplomas', title: 'Gestión de Envase, Empaque y Embalaje de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso14.pdf', icon: '📦', color: '#ff4d00', description: 'Envase, empaque y embalaje para exportar · certificado PDF', visibility: 'public' },
+    { id: 29, section: 'diplomas', title: 'Gestión de Riesgos en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso15.pdf', icon: '🛡️', color: '#ff4d00', description: 'Identificar y gestionar riesgos comerciales · certificado PDF', visibility: 'public' },
+    { id: 30, section: 'diplomas', title: 'Inteligencia Artificial en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso18.pdf', icon: '🤖', color: '#ff4d00', description: 'Aplicaciones de IA a la exportación · certificado PDF', visibility: 'public' },
+    { id: 31, section: 'diplomas', title: 'Inteligencia de Mercados', url: 'https://thenecioia-png.github.io/diplomas/cert_curso19.pdf', icon: '📊', color: '#ff4d00', description: 'Análisis de mercados internacionales · certificado PDF', visibility: 'public' },
+    { id: 32, section: 'diplomas', title: 'Branding y Posicionamiento de Marca en Entornos Globales', url: 'https://thenecioia-png.github.io/diplomas/cert_curso35.pdf', icon: '🏷️', color: '#ff4d00', description: 'Construir marca para mercados globales · certificado PDF', visibility: 'public' },
+    { id: 33, section: 'diplomas', title: 'Marketing en Redes Sociales para la Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso37.pdf', icon: '📣', color: '#ff4d00', description: 'Redes sociales aplicadas a la exportación · certificado PDF', visibility: 'public' },
+    { id: 34, section: 'diplomas', title: 'Aspectos Legales y Protección de la Propiedad Intelectual', url: 'https://thenecioia-png.github.io/diplomas/cert_curso38.pdf', icon: '©️', color: '#ff4d00', description: 'Protección legal e intelectual para exportar · certificado PDF', visibility: 'public' },
 
     // ── Contenido (música y libros) ────────────────────────
     { id: 35, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — en Spotify y YouTube' },
     { id: 36, section: 'contenido', title: 'The Necio No Manipulado', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Denison-Peguero-ebook/dp/B0HLV64WMX', icon: '📕', color: '#e91e63', description: 'Libro — guía contra la manipulación' },
     { id: 37, section: 'contenido', title: 'The Necio No Manipulado II', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Segunda-Autodefensa-ebook/dp/B0HLWM21RV', icon: '📗', color: '#9c27b0', description: 'Libro — manual de autodefensa mental' },
-    { id: 38, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
+    { id: 38, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/search?q=Denison%20Peguero&c=books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
   ]
 };
 
@@ -822,7 +822,7 @@ $('admin-logout-btn').addEventListener('click', logout);
     if (has('música', 'musica', 'canción', 'cancion', 'spotify', 'neon heart', 'álbum', 'album')) return 'La música de NEON HEART está en Spotify y YouTube. Busca la sección Canales o Contenido. 🎵';
     if (has('youtube', 'canal', 'video', 'vídeo', 'narrador', 'documental')) return 'El Narrador de Historias es el canal de documentales. Dale en la sección Canales. 📺';
     if (has('github', 'código', 'codigo', 'proyecto', 'programar', 'app', 'aplicación')) return 'Más de 50 proyectos en GitHub. Mira la sección Webs o Apps. 🐙';
-    if (has('libro', 'kdp', 'amazon', 'escribir')) return 'Los libros van a Amazon KDP, próximamente. Paciencia, necio. 📚';
+    if (has('libro', 'kdp', 'amazon', 'escribir')) return 'Mis libros están en Amazon: "The Necio No Manipulado" I y II. Búscalos en la sección Contenido. 📚';
     if (has('email', 'contacto', 'correo', 'mensaje', 'escribirte')) return 'Escríbeme a thenecioia@gmail.com. Está en la sección Redes. ✉️';
     if (has('radio', 'emisora', 'escuchar', 'música en vivo', 'musica en vivo')) return 'La radio está abajo a la izquierda. Elige una emisora y dale al play. 📻';
     if (has('clima', 'tiempo', 'lluvia', 'llueve', 'sol', 'frío', 'frio', 'calor')) return 'El clima de tu zona está arriba, en la cabecera. Si no sale, es que aún me estoy asomando. ☀️';
@@ -870,29 +870,34 @@ $('admin-logout-btn').addEventListener('click', logout);
   }
 
   async function registerVisit() {
-    const geo = await fetchGeo();
     const el = $('footer-visitor');
     const chip = $('status-visitor-txt');
-    if (geo) {
-      const flag = geo.flag ? `<b>${esc(geo.flag)}</b> ` : '';
-      const where = `${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
-      if (el) el.innerHTML = `📍 ${flag}${where}`;
-      if (chip) chip.innerHTML = `📍 ${flag}<b>${esc(geo.country)}</b>`;
-    } else {
-      if (el) el.textContent = '📍 visitante local';
-      if (chip) chip.textContent = '📍 visitante local';
-    }
+    try {
+      const r = await api('/api/hub/visit', { method: 'POST', body: '{}' });
+      const geo = (r && r.geo) || r || {};
+      if (geo && geo.country) {
+        const flag = geo.flag ? `<b>${esc(geo.flag)}</b> ` : '';
+        const where = `${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
+        if (el) el.innerHTML = `📍 ${flag}${where}`;
+        if (chip) chip.innerHTML = `📍 ${flag}<b>${esc(geo.country)}</b>`;
+        return;
+      }
+    } catch {}
+    if (el) el.textContent = '📍 visitante local';
+    if (chip) chip.textContent = '📍 visitante local';
   }
 
   function loadStats() {
-    // Contador local de este navegador (sin backend, honesto).
-    const n = Number(localStorage.getItem('necio_visits') || 0) + 1;
-    localStorage.setItem('necio_visits', String(n));
-    const txt = `🔥 <b>${n}</b> visita${n === 1 ? '' : 's'}`;
-    const el = $('footer-visits');
-    if (el) el.innerHTML = txt;
-    const chip = $('status-visits-txt');
-    if (chip) chip.innerHTML = txt;
+    api('/api/hub/stats')
+      .then((r) => {
+        const n = Number((r && (r.visits != null ? r.visits : r.total)) || 0);
+        const txt = `🔥 <b>${n.toLocaleString('es-DO')}</b> visita${n === 1 ? '' : 's'}`;
+        const el = $('footer-visits');
+        if (el) el.innerHTML = txt;
+        const chip = $('status-visits-txt');
+        if (chip) chip.innerHTML = txt;
+      })
+      .catch(() => { /* sin backend: dejamos el marcador a cero */ });
   }
 
   /* ── Clima + día/noche ─────────────────────────────────────────── */
@@ -1271,6 +1276,11 @@ $('admin-logout-btn').addEventListener('click', logout);
     every(CFG.timing.mischiefEvery, doMischief);
     every(CFG.timing.jumpEvery, doJump);
     every(CFG.timing.sayEvery, () => sayPhrase(pick(PHRASES)));
+    // aparece solo al poco de cargar, para que ande por toda la web sin esperar el scroll
+    setTimeout(() => {
+      if (!appear) { const sp = safePoint(); px = sp.x; py = sp.y; target = null;
+        appear = true; root.classList.add('on'); setState(STATES.IDLE); }
+    }, 2500);
     requestAnimationFrame(tick);
   }
 

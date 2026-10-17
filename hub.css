@@ -61,10 +61,15 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .hidden { display: none !important; }
 
 /* ═══ Capas de ambiente ═══════════════════════════════════════════ */
-.bg-fire, .bg-grain, .wood-bg, .sky, .thunder-flash {
+.bg-fire, .bg-grain, .bg-video, .sky, .thunder-flash {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
 }
-.wood-bg { width: 100%; height: 100%; z-index: 0; }
+.bg-video {
+  width: 100%; height: 100%; z-index: 0;
+  object-fit: cover;
+  background-color: #0a0604;
+  filter: brightness(.95) contrast(1.05);
+}
 
 .bg-fire {
   z-index: 0;
@@ -253,30 +258,47 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 }
 @keyframes glowPulse { 0%,100% { opacity: .8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
 .mascot-rock {
-  position: absolute; bottom: -6px; width: 320px; height: 62px; border-radius: 50%;
-  background: radial-gradient(ellipse, #241409 40%, #120a06 75%); filter: blur(2px);
+  position: absolute; bottom: -8px; width: 300px; height: 58px; border-radius: 50%;
+  background: radial-gradient(ellipse, #2a1608 42%, #120a06 78%); filter: blur(6px);
+  opacity: .9;
 }
 .mascot {
-  position: relative; width: clamp(240px, 34vw, 420px); height: auto; z-index: 2;
-  filter: drop-shadow(0 24px 44px rgba(0,0,0,.55));
+  position: relative; width: clamp(210px, 28vw, 330px); aspect-ratio: 1/1; z-index: 2;
+  filter: drop-shadow(0 4px 8px rgba(24,7,0,.85))
+          drop-shadow(0 18px 36px rgba(0,0,0,.6))
+          drop-shadow(0 0 30px rgba(249,81,14,.30));
+  animation: mascotFloat 6s ease-in-out infinite;
+}
+.mascot-frames {
+  display: block; width: 100%; height: 100%;
+  background: url('diablito-sprite.png') no-repeat;
+  background-size: 1200% 100%;
+  animation: mascotFrames 1.6s steps(11) infinite;
+}
+@keyframes mascotFrames {
+  from { background-position-x: 0%; }
+  to   { background-position-x: 100%; }
+}
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
 
-/* respiración + parpadeo + cola, todo sutil y fluido */
-.m-torso { transform-origin: 180px 266px; animation: breathe 4.2s ease-in-out infinite; }
+/* respiración + parpadeo + capa + cuernos + vejiga, todo sutil y fluido */
+.m-torso { transform-origin: 180px 300px; animation: breathe 4.2s ease-in-out infinite; }
 @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.015, .985); } }
 .m-lids { opacity: 0; animation: blink 6.5s infinite; }
 @keyframes blink {
   0%, 94%, 100% { opacity: 0; }
   95%, 97% { opacity: 1; }
 }
-.m-tail { transform-origin: 236px 300px; animation: tailWag 3.4s ease-in-out infinite; }
-@keyframes tailWag { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-13deg); } }
-.m-wing-l { transform-origin: 132px 214px; animation: wingL 4.4s ease-in-out infinite; }
-.m-wing-r { transform-origin: 228px 214px; animation: wingR 4.4s ease-in-out infinite; }
-@keyframes wingL { 0%,100% { transform: rotate(0); } 50% { transform: rotate(9deg); } }
-@keyframes wingR { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-9deg); } }
-.m-trident { transform-origin: 252px 354px; animation: tridentSway 5.5s ease-in-out infinite; }
-@keyframes tridentSway { 0%,100% { transform: rotate(0); } 50% { transform: rotate(3.5deg); } }
+.m-cape { transform-origin: 180px 240px; animation: capeFlap 5s ease-in-out infinite; }
+@keyframes capeFlap { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-2deg) scale(1.01); } }
+.m-horn-l { transform-origin: 124px 96px; animation: hornSway 6s ease-in-out infinite; }
+.m-horn-r { transform-origin: 236px 96px; animation: hornSway 6s ease-in-out infinite; }
+@keyframes hornSway { 0%,100% { transform: rotate(0); } 50% { transform: rotate(1.2deg); } }
+.m-trident { transform-origin: 276px 240px; animation: vejigaSway 4.5s ease-in-out infinite; }
+@keyframes vejigaSway { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-5deg); } }
 
 .scroll-hint {
   position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
@@ -603,7 +625,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 /* ═══ La mascota errante (máquina de estados) ═══ */
 .wanderer {
   position: fixed; left: 0; top: 0; z-index: 40;
-  width: 92px; height: 92px;
+  width: 104px; height: 104px;
   pointer-events: none; opacity: 0; transition: opacity .5s ease;
   will-change: transform;
 }
@@ -615,28 +637,87 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   white-space: nowrap; opacity: 0; transition: opacity .25s; pointer-events: none;
 }
 .wanderer-say.show { opacity: 1; }
-.wanderer-svg { width: 100%; height: 100%; filter: drop-shadow(0 8px 18px rgba(0,0,0,.5)); }
-.w-body { transform-origin: 60px 92px; animation: wBreathe 3.6s ease-in-out infinite; }
-@keyframes wBreathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02,.98)} }
-.w-lids { opacity: 0; animation: wBlink 6s infinite; }
-@keyframes wBlink { 0%,94%,100%{opacity:0} 95%,97%{opacity:1} }
-.w-tail { transform-origin: 88px 84px; animation: wTail 3s ease-in-out infinite; }
-@keyframes wTail { 0%,100%{transform:rotate(0)} 50%{transform:rotate(-18deg)} }
-.w-wing { animation: wWing 4s ease-in-out infinite; }
-@keyframes wWing { 0%,100%{transform:rotate(0)} 50%{transform:rotate(9deg)} }
-.wanderer.is-walking .wanderer-svg { animation: wBob .85s ease-in-out infinite; }
-.wanderer.is-running .wanderer-svg { animation: wRun .4s ease-in-out infinite; }
-.wanderer.is-jumping .wanderer-svg { animation: wJump .8s cubic-bezier(.22,.68,.32,1); }
+.wanderer-svg {
+  width: 100%; height: 100%; filter: drop-shadow(0 8px 18px rgba(0,0,0,.5));
+  transform-origin: 50% 92%;
+}
+.wanderer-frames {
+  display: block; width: 100%; height: 100%;
+  background: url('diablito-sprite.png') no-repeat;
+  background-size: 1200% 100%;
+  animation: wFrames 1.4s steps(11) infinite;
+}
+@keyframes wFrames {
+  from { background-position-x: 0%; }
+  to   { background-position-x: 100%; }
+}
+/* reposo: respiración suave */
+.wanderer.on .wanderer-svg { animation: wBreathe 3.4s ease-in-out infinite; }
+@keyframes wBreathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03,.97)} }
+
+/* caminar: vaivén + inclinación + rebote en dos pasos (ciclo real) */
+.wanderer.is-walking .wanderer-svg { animation: wWalk .92s ease-in-out infinite; }
+@keyframes wWalk {
+  0%,100% { transform: translateY(0) rotate(0) scale(1,1); }
+  12.5%  { transform: translateY(-3px) rotate(-4.5deg) scale(1.015,.985); }
+  25%    { transform: translateY(-7px) rotate(0); }
+  37.5%  { transform: translateY(-3px) rotate(4.5deg) scale(1.015,.985); }
+  50%    { transform: translateY(0) rotate(0) scale(1,1); }
+  62.5%  { transform: translateY(-3px) rotate(4.5deg) scale(1.015,.985); }
+  75%    { transform: translateY(-7px) rotate(0); }
+  87.5%  { transform: translateY(-3px) rotate(-4.5deg) scale(1.015,.985); }
+}
+
+/* correr: más rápido, más inclinado, más rebote */
+.wanderer.is-running .wanderer-svg { animation: wRun .48s ease-in-out infinite; }
+@keyframes wRun {
+  0%,100% { transform: translateY(0) rotate(-7deg) scale(.985,1); }
+  25%    { transform: translateY(-9px) rotate(-3deg); }
+  50%    { transform: translateY(-2px) rotate(7deg) scale(1.03,.98); }
+  75%    { transform: translateY(-9px) rotate(3deg); }
+}
+
+/* saltar: agacharse (squash), estirarse, caer con squash */
+.wanderer.is-jumping .wanderer-svg { animation: wJump .9s cubic-bezier(.22,.68,.32,1); }
+@keyframes wJump {
+  0%   { transform: translateY(0) scale(1.16,.84); }
+  22%  { transform: translateY(-6px) scale(.9,1.1); }
+  48%  { transform: translateY(-44px) scale(.97,1.03); }
+  72%  { transform: translateY(-20px) scale(1,1); }
+  88%  { transform: translateY(0) scale(1.12,.9); }
+  100% { transform: translateY(0) scale(1,1); }
+}
+
+/* travesura: se balancea de lado a lado */
 .wanderer.is-mischief .wanderer-svg { animation: wGiggle .5s ease-in-out infinite; }
-.wanderer.is-reacting .wanderer-svg { animation: wReact 1s ease-in-out infinite; }
-.wanderer.is-sleeping .wanderer-svg { animation: wSleep 4s ease-in-out infinite; }
-.wanderer.is-sleeping .w-lids { opacity: 1; animation: none; }
-@keyframes wBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-@keyframes wRun { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-5px) rotate(3deg)} }
-@keyframes wJump { 0%{transform:translateY(0)} 35%{transform:translateY(-36px) scale(1.04)} 65%{transform:translateY(-36px)} 100%{transform:translateY(0)} }
-@keyframes wGiggle { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-8deg)} 40%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 80%{transform:rotate(5deg)} }
-@keyframes wReact { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-@keyframes wSleep { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02,.97)} }
+@keyframes wGiggle {
+  0%,100% { transform: rotate(0); }
+  20% { transform: rotate(-9deg) scale(.98,1.02); }
+  40% { transform: rotate(9deg) scale(1.02,.98); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(6deg); }
+}
+
+/* reacción: se sobresalta */
+.wanderer.is-reacting .wanderer-svg { animation: wReact .7s ease-in-out; }
+@keyframes wReact {
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(-10px) scale(1.06,.94) rotate(-3deg); }
+  55%  { transform: translateY(2px) scale(.97,1.03) rotate(2deg); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* dormir: respiración lenta */
+.wanderer.is-sleeping .wanderer-svg { animation: wSleep 3.6s ease-in-out infinite; }
+@keyframes wSleep { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03,.96)} }
+
+/* velocidad de los cuadros según el estado (la animación del diablito) */
+.wanderer.is-walking .wanderer-frames { animation-duration: .8s; }
+.wanderer.is-running .wanderer-frames { animation-duration: .42s; }
+.wanderer.is-jumping .wanderer-frames { animation-duration: .9s; }
+.wanderer.is-mischief .wanderer-frames { animation-duration: .5s; }
+.wanderer.is-reacting .wanderer-frames { animation-duration: .5s; }
+.wanderer.is-sleeping .wanderer-frames { animation-duration: 2.6s; }
 .spark {
   position: fixed; width: 5px; height: 5px; border-radius: 50%;
   background: var(--ember-2); box-shadow: 0 0 9px var(--ember);
@@ -646,7 +727,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   0%{transform:translate(0,0) scale(1); opacity:1}
   100%{transform:translate(var(--dx), var(--dy)) scale(0); opacity:0}
 }
-@media (max-width: 620px) { .wanderer { width: 72px; height: 72px; } }
+@media (max-width: 620px) { .wanderer { width: 84px; height: 84px; } }
 
 /* ═══ Responsive ══════════════════════════════════════════════════ */
 @media (max-width: 900px) {
@@ -686,6 +767,6 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   html { scroll-behavior: auto; }
-  .mascot, .m-tail, .m-wing, .m-horn, .m-trident, .m-torso, .m-lids { animation: none !important; }
+  .mascot, .m-cape, .m-horn-l, .m-horn-r, .m-trident, .m-torso, .m-lids { animation: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
