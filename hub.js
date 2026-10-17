@@ -275,16 +275,57 @@ const STATIC_DATA = {
     accent: '#ff4d00'
   },
   items: [
+    // ── Webs ───────────────────────────────────────────────
     { id: 1, section: 'webs', title: 'GitHub', url: 'https://github.com/thenecioia-png', icon: '🐙', color: '#24292f', description: '50+ proyectos, apps y herramientas' },
-    { id: 2, section: 'canales', title: 'El Narrador de Historias', url: 'https://www.youtube.com/channel/UC73SZabl1rJdAX8ZqkcECbA', icon: '📺', color: '#ff0000', description: 'Documentales e historias de República Dominicana' },
-    { id: 3, section: 'canales', title: 'The Necio — Música', url: 'https://www.youtube.com/channel/UCj_Jyy61gv69kD7Oa3VWcSA', icon: '🎵', color: '#ff4d00', description: 'NEON HEART y todas mis canciones' },
-    { id: 4, section: 'redes', title: 'Email', url: 'mailto:thenecioia@gmail.com', icon: '✉️', color: '#1a73e8', description: 'Escríbeme directo' },
-    { id: 5, section: 'apps', title: 'Conversor Universal', url: 'https://github.com/thenecioia-png/conversor-universal', icon: '🔄', color: '#00c853', description: 'Conversor de unidades y medidas' },
-    { id: 6, section: 'apps', title: 'Generador de Contraseñas', url: 'https://github.com/thenecioia-png/generador-passwords', icon: '🔐', color: '#ff6d00', description: 'Contraseñas seguras al instante' },
-    { id: 7, section: 'apps', title: 'Memoria — Juego', url: 'https://github.com/thenecioia-png/memoria-juego', icon: '🧠', color: '#aa00ff', description: 'Juego clásico de memoria' },
-    { id: 8, section: 'apps', title: 'Snake Clásico', url: 'https://github.com/thenecioia-png/snake-clasico', icon: '🐍', color: '#76ff03', description: 'El juego de la serpiente' },
-    { id: 9, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://www.youtube.com/channel/UCj_Jyy61gv69kD7Oa3VWcSA', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — ya en Spotify y YouTube' },
-    { id: 10, section: 'contenido', title: 'Libros — Amazon KDP', url: '', icon: '📚', color: '#e91e63', description: 'Mis libros (próximamente en Amazon)' }
+    { id: 2, section: 'webs', title: 'El Necio Digital', url: 'https://thenecioia-png.github.io/', icon: '⚡', color: '#ff4d00', description: 'Esta vitrina: todas mis creaciones en un solo lugar' },
+
+    // ── Canales (YouTube) ──────────────────────────────────
+    { id: 3, section: 'canales', title: 'El Narrador de Historias', url: 'https://www.youtube.com/@ElNarradordeHistorias-d9d', icon: '📺', color: '#ff0000', description: 'Documentales e historias del mundo entero' },
+    { id: 4, section: 'canales', title: 'The Necio — Música', url: 'https://www.youtube.com/channel/UCj_Jyy61gv69kD7Oa3VWcSA', icon: '🎵', color: '#ff4d00', description: 'NEON HEART y todas mis canciones' },
+    { id: 5, section: 'canales', title: 'EL NECIO IA', url: 'https://www.youtube.com/channel/UCWJe0BKrry3jvdyxaX8cvWw', icon: '🤖', color: '#00e5ff', description: 'Inteligencia artificial y tecnología' },
+
+    // ── Redes sociales ─────────────────────────────────────
+    { id: 6, section: 'redes', title: 'Facebook (perfil)', url: 'https://www.facebook.com/denison.peguero/', icon: '👤', color: '#1877f2', description: 'Denison Peguero en Facebook' },
+    { id: 7, section: 'redes', title: 'Facebook — El Narrador de Historias', url: '', icon: '📘', color: '#1877f2', description: 'Página de historias (enlace pendiente)' },
+    { id: 8, section: 'redes', title: 'TikTok', url: 'https://www.tiktok.com/@elnarradordehistoriasrd', icon: '🎬', color: '#000000', description: '@elnarradordehistoriasrd' },
+    { id: 9, section: 'redes', title: 'Instagram', url: 'https://www.instagram.com/denison_peguero/', icon: '📸', color: '#e1306c', description: '@denison_peguero' },
+    { id: 10, section: 'redes', title: 'Spotify', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '🎧', color: '#1db954', description: 'The Necio en Spotify' },
+    { id: 11, section: 'redes', title: 'Email', url: 'mailto:thenecioia@gmail.com', icon: '✉️', color: '#1a73e8', description: 'Escríbeme directo' },
+
+    // ── Apps (web / GitHub) ────────────────────────────────
+    { id: 12, section: 'apps', title: 'Conversor Universal', url: 'https://github.com/thenecioia-png/conversor-universal', icon: '🔄', color: '#00c853', description: 'Conversor de unidades y medidas' },
+    { id: 13, section: 'apps', title: 'Generador de Contraseñas', url: 'https://github.com/thenecioia-png/generador-passwords', icon: '🔐', color: '#ff6d00', description: 'Contraseñas seguras al instante' },
+    { id: 14, section: 'apps', title: 'Memoria — Juego', url: 'https://github.com/thenecioia-png/memoria-juego', icon: '🧠', color: '#aa00ff', description: 'Juego clásico de memoria' },
+    { id: 15, section: 'apps', title: 'Snake Clásico', url: 'https://github.com/thenecioia-png/snake-clasico', icon: '🐍', color: '#76ff03', description: 'El juego de la serpiente' },
+
+    // ── Apps (Google Play) ─────────────────────────────────
+    { id: 16, section: 'apps', title: 'El Contacto de los Contactos', url: 'https://play.google.com/store/apps/details?id=com.elcontacto.app', icon: '📇', color: '#34a853', description: 'App Android en Play Store' },
+    { id: 17, section: 'apps', title: 'NewsFlow', url: 'https://play.google.com/store/apps/details?id=com.newsflow.periodico', icon: '📰', color: '#4285f4', description: 'Periódico digital: 90+ medios en uno' },
+    { id: 18, section: 'apps', title: 'The Necio Cobranza', url: 'https://play.google.com/store/apps/details?id=com.thenecio.cobranza', icon: '💰', color: '#fbbc04', description: 'App de gestión de cobranza' },
+
+    // ── Diplomas (ProDominicana Capacita) ──────────────────
+    { id: 19, section: 'diplomas', title: 'Exportar Paso a Paso', url: 'https://thenecioia-png.github.io/diplomas/cert_curso3.pdf', icon: '📜', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 20, section: 'diplomas', title: 'Aspectos Fundamentales de E-Commerce', url: 'https://thenecioia-png.github.io/diplomas/cert_curso4.pdf', icon: '🛒', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 21, section: 'diplomas', title: 'Los Incoterms', url: 'https://thenecioia-png.github.io/diplomas/cert_curso6.pdf', icon: '🚢', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 22, section: 'diplomas', title: 'La Gestión Internacional en Procesos de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso7.pdf', icon: '🌐', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 23, section: 'diplomas', title: 'Cultura y Pensamiento Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso8.pdf', icon: '🧭', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 24, section: 'diplomas', title: 'Comportamiento del Consumidor', url: 'https://thenecioia-png.github.io/diplomas/cert_curso9.pdf', icon: '🛍️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 25, section: 'diplomas', title: 'Desarrollo del Plan Estratégico para el Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso10.pdf', icon: '🎯', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 26, section: 'diplomas', title: 'Internacionalización de Pymes', url: 'https://thenecioia-png.github.io/diplomas/cert_curso11.pdf', icon: '🏢', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 27, section: 'diplomas', title: 'Ley 84-99: Reactivación y Fomento de las Exportaciones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso13.pdf', icon: '⚖️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 28, section: 'diplomas', title: 'Gestión de Envase, Empaque y Embalaje de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso14.pdf', icon: '📦', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 29, section: 'diplomas', title: 'Gestión de Riesgos en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso15.pdf', icon: '🛡️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 30, section: 'diplomas', title: 'Inteligencia Artificial en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso18.pdf', icon: '🤖', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 31, section: 'diplomas', title: 'Inteligencia de Mercados', url: 'https://thenecioia-png.github.io/diplomas/cert_curso19.pdf', icon: '📊', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 32, section: 'diplomas', title: 'Branding y Posicionamiento de Marca en Entornos Globales', url: 'https://thenecioia-png.github.io/diplomas/cert_curso35.pdf', icon: '🏷️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 33, section: 'diplomas', title: 'Marketing en Redes Sociales para la Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso37.pdf', icon: '📣', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+    { id: 34, section: 'diplomas', title: 'Aspectos Legales y Protección de la Propiedad Intelectual', url: 'https://thenecioia-png.github.io/diplomas/cert_curso38.pdf', icon: '©️', color: '#ff4d00', description: 'ProDominicana Capacita · certificado PDF', visibility: 'private' },
+
+    // ── Contenido (música y libros) ────────────────────────
+    { id: 35, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — en Spotify y YouTube' },
+    { id: 36, section: 'contenido', title: 'The Necio No Manipulado', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Denison-Peguero-ebook/dp/B0HLV64WMX', icon: '📕', color: '#e91e63', description: 'Libro — guía contra la manipulación' },
+    { id: 37, section: 'contenido', title: 'The Necio No Manipulado II', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Segunda-Autodefensa-ebook/dp/B0HLWM21RV', icon: '📗', color: '#9c27b0', description: 'Libro — manual de autodefensa mental' },
+    { id: 38, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
   ]
 };
 
