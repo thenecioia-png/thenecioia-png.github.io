@@ -320,12 +320,15 @@ const STATIC_DATA = {
     { id: 32, section: 'diplomas', title: 'Branding y Posicionamiento de Marca en Entornos Globales', url: 'https://thenecioia-png.github.io/diplomas/cert_curso35.pdf', icon: '🏷️', color: '#ff4d00', description: 'Construir marca para mercados globales · certificado PDF', visibility: 'public' },
     { id: 33, section: 'diplomas', title: 'Marketing en Redes Sociales para la Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso37.pdf', icon: '📣', color: '#ff4d00', description: 'Redes sociales aplicadas a la exportación · certificado PDF', visibility: 'public' },
     { id: 34, section: 'diplomas', title: 'Aspectos Legales y Protección de la Propiedad Intelectual', url: 'https://thenecioia-png.github.io/diplomas/cert_curso38.pdf', icon: '©️', color: '#ff4d00', description: 'Protección legal e intelectual para exportar · certificado PDF', visibility: 'public' },
+    { id: 35, section: 'diplomas', title: 'Negociaciones Estratégicas, Tácticas y Estilos', url: 'https://thenecioia-png.github.io/diplomas/cert_curso5.pdf', icon: '🤝', color: '#ff4d00', description: 'Estrategias y tácticas para negociar mejor · certificado PDF', visibility: 'public' },
+    { id: 36, section: 'diplomas', title: 'Toma de Decisiones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso12.pdf', icon: '🧠', color: '#ff4d00', description: 'Métodos y criterios para decidir mejor · certificado PDF', visibility: 'public' },
+    { id: 37, section: 'diplomas', title: 'Gestión Aduanera en la República Dominicana', url: 'https://thenecioia-png.github.io/diplomas/cert_curso17.pdf', icon: '🛃', color: '#ff4d00', description: 'Procesos y normativa aduanera dominicana · certificado PDF', visibility: 'public' },
 
     // ── Contenido (música y libros) ────────────────────────
-    { id: 35, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — en Spotify y YouTube' },
-    { id: 36, section: 'contenido', title: 'The Necio No Manipulado', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Denison-Peguero-ebook/dp/B0HLV64WMX', icon: '📕', color: '#e91e63', description: 'Libro — guía contra la manipulación' },
-    { id: 37, section: 'contenido', title: 'The Necio No Manipulado II', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Segunda-Autodefensa-ebook/dp/B0HLWM21RV', icon: '📗', color: '#9c27b0', description: 'Libro — manual de autodefensa mental' },
-    { id: 38, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/search?q=Denison%20Peguero&c=books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
+    { id: 38, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — en Spotify y YouTube' },
+    { id: 39, section: 'contenido', title: 'The Necio No Manipulado', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Denison-Peguero-ebook/dp/B0HLV64WMX', icon: '📕', color: '#e91e63', description: 'Libro — guía contra la manipulación' },
+    { id: 40, section: 'contenido', title: 'The Necio No Manipulado II', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Segunda-Autodefensa-ebook/dp/B0HLWM21RV', icon: '📗', color: '#9c27b0', description: 'Libro — manual de autodefensa mental' },
+    { id: 41, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/search?q=Denison%20Peguero&c=books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
   ]
 };
 
