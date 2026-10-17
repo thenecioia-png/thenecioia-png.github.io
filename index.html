@@ -103,6 +103,7 @@
   <header class="hero" id="top">
     <div class="hero-ember" aria-hidden="true"></div>
     <div class="hero-inner">
+      <div class="hero-avatar-wrap hidden"><img class="hero-avatar" id="hero-avatar" alt="Foto de perfil" /></div>
       <p class="hero-kicker" id="hero-tagline">Todo lo mío, en un solo lugar.</p>
       <h1 class="hero-title" id="hero-name">El Necio Digital</h1>
       <p class="hero-bio" id="hero-bio"></p>
@@ -111,6 +112,25 @@
           <span>Explorar la guarida</span>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </a>
+      </div>
+
+      <div class="hero-share">
+        <div class="share-qr" title="Escanea para abrir la guarida">
+          <img src="qr-code.png" alt="Código QR de El Necio Digital" width="124" height="124" loading="lazy" />
+        </div>
+        <div class="share-body">
+          <span class="share-label">Comparte la guarida</span>
+          <div class="share-btns">
+            <button class="share-btn" id="share-copy" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Copiar enlace</span>
+            </button>
+            <button class="share-btn share-whatsapp" id="share-whatsapp" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1L3 20l1-5.3A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 9.5h.01M12.5 9.5h.01M16.5 9.5h.01"/></svg>
+              <span>WhatsApp</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -451,6 +471,11 @@
         <label class="field"><span>Título</span><input type="text" id="item-title" placeholder="Ej. YouTube" required /></label>
         <label class="field"><span>Enlace (URL)</span><input type="url" id="item-url" placeholder="https://…" /></label>
         <label class="field"><span>Descripción</span><textarea id="item-description" rows="2" placeholder="Opcional"></textarea></label>
+        <label class="field"><span>Foto (diploma, captura, portada…)</span>
+          <input type="hidden" id="item-image" />
+          <input type="file" id="item-image-file" accept="image/*" class="file-input" />
+          <img id="item-image-preview" class="upload-preview hidden" alt="Vista previa de la foto" />
+        </label>
         <label class="field"><span>Color de acento</span>
           <div class="color-row"><input type="color" id="item-color" value="#ff4d00" /><input type="text" id="item-color-text" placeholder="#ff4d00" /></div>
         </label>
@@ -472,6 +497,11 @@
         </div>
         <label class="field"><span>Frase (kicker)</span><input type="text" id="profile-tagline" placeholder="Todo lo mío, en un solo lugar." /></label>
         <label class="field"><span>Biografía</span><textarea id="profile-bio" rows="3" placeholder="Un par de frases sobre ti…"></textarea></label>
+        <label class="field"><span>Foto de perfil</span>
+          <input type="hidden" id="profile-avatar" />
+          <input type="file" id="profile-avatar-file" accept="image/*" class="file-input" />
+          <img id="profile-avatar-preview" class="upload-preview hidden" alt="Vista previa de la foto" />
+        </label>
         <label class="field"><span>Color principal</span>
           <div class="color-row"><input type="color" id="profile-accent" value="#ff4d00" /><input type="text" id="profile-accent-text" placeholder="#ff4d00" /></div>
         </label>

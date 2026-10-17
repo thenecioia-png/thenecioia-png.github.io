@@ -34,6 +34,13 @@ function safeUrl(u) {
     return (p.protocol === 'http:' || p.protocol === 'https:' || p.protocol === 'mailto:' || p.protocol === 'tel:') ? p.href : '';
   } catch { return ''; }
 }
+// Resuelve URLs de imágenes: las relativas (/uploads/…) apuntan al backend.
+function imgUrl(u) {
+  if (!u) return '';
+  if (/^https?:\/\//i.test(u)) return u;
+  if (u.startsWith('/')) return API_BASE + u;
+  return u;
+}
 function toast(msg, kind) {
   const c = $('toast-container');
   const el = document.createElement('div');
@@ -42,6 +49,37 @@ function toast(msg, kind) {
   c.appendChild(el);
   setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; }, 2600);
   setTimeout(() => el.remove(), 3000);
+}
+
+/* ── compartir la guarida (QR + copiar enlace + WhatsApp) ─────────── */
+const SHARE_URL = 'https://thenecioia-png.github.io/';
+const SHARE_TEXT = 'El Necio Digital — La Guarida. Todas mis creaciones y logros, en un solo lugar.';
+
+function initShare() {
+  const copyBtn = $('share-copy');
+  const waBtn = $('share-whatsapp');
+  if (!copyBtn && !waBtn) return;
+
+  copyBtn.addEventListener('click', async () => {
+    const ok = async () => toast('Enlace copiado al portapapeles.');
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      ok();
+    } catch {
+      // fallback para contextos sin Clipboard API (p. ej. http)
+      const ta = document.createElement('textarea');
+      ta.value = SHARE_URL; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); }
+      catch { toast('No se pudo copiar: ' + SHARE_URL, 'err'); }
+      ta.remove();
+    }
+  });
+
+  waBtn.addEventListener('click', () => {
+    window.open('https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' ' + SHARE_URL), '_blank', 'noopener');
+  });
 }
 
 /* ── modals (accesibles: foco al abrir, trap de Tab y retorno de foco) ── */
@@ -118,6 +156,12 @@ function renderHero() {
   $('hero-bio').textContent = p.bio || '';
   $('footer-name').textContent = p.name || 'El Necio Digital';
   $('footer-year').textContent = new Date().getFullYear();
+  const av = $('hero-avatar');
+  if (av) {
+    const src = imgUrl(p.avatar);
+    if (src) { av.src = src; av.closest('.hero-avatar-wrap')?.classList.remove('hidden'); }
+    else { av.removeAttribute('src'); av.closest('.hero-avatar-wrap')?.classList.add('hidden'); }
+  }
   applyAccent(p.accent);
 }
 function highlightName(name) {
@@ -167,8 +211,12 @@ function cardHTML(it, isAdmin) {
   const url = safeUrl(it.url);
   const color = it.color || '#ff4d00';
   const isPrivate = it.visibility === 'private';
+  const image = imgUrl(it.image);
+  const media = image
+    ? `<span class="card-img" style="border-color:${esc(color)}"><img src="${esc(image)}" alt="" loading="lazy" /></span>`
+    : `<span class="card-icon" style="color:${esc(color)}">${esc(it.icon || '🔗')}</span>`;
   const inner = `
-    <span class="card-icon" style="color:${esc(color)}">${esc(it.icon || '🔗')}</span>
+    ${media}
     <span class="card-body">
       <span class="card-title">${esc(it.title)}</span>
       ${it.description ? `<span class="card-desc">${esc(it.description)}</span>` : ''}
@@ -221,8 +269,8 @@ function observeReveals() {
 const STATIC_DATA = {
   profile: {
     name: 'El Necio Digital',
-    tagline: 'Historias, música y código — todo lo de Denison Peguero',
-    bio: 'Denison Peguero (The Necio). Creador de contenido, músico (NEON HEART) y maker dominicano. 50+ proyectos en GitHub, 12 certificados ProDominicana, música en Spotify y YouTube.',
+    tagline: 'Todas mis creaciones y logros, en un solo lugar.',
+    bio: 'Denison Peguero (The Necio), creador de contenido, músico (NEON HEART) y maker dominicano. Esta es mi vitrina digital: todas mis creaciones, proyectos, música y logros reunidos en un solo lugar, para que el mundo los vea.',
     emoji: '⚡',
     accent: '#ff4d00'
   },
@@ -269,6 +317,26 @@ async function api(path, opts = {}) {
 }
 
 function staticItems() { return STATIC_DATA.items.map((x) => ({ ...x })); }
+
+// Sube una foto (obra/diploma/avatar) al backend y devuelve su URL pública.
+async function uploadImage(file) {
+  if (!file) return '';
+  const fd = new FormData();
+  fd.append('image', file);
+  const token = localStorage.getItem('hub_token');
+  const headers = {};
+  if (token && token !== ADMIN_TOKEN) headers['Authorization'] = 'Bearer ' + token;
+  let res;
+  try {
+    res = await fetch(API_BASE + '/api/hub/upload', { method: 'POST', headers, body: fd });
+  } catch {
+    throw new Error('Sin conexión con el servidor.');
+  }
+  let data = {};
+  try { data = await res.json(); } catch {}
+  if (!res.ok) throw new Error(data.error || ('Error ' + res.status));
+  return data.url || '';
+}
 
 // Vista pública: datos reales del servidor; si no responde, fallback estático.
 async function loadPublic() {
@@ -401,6 +469,9 @@ function openItemModal(section, id) {
   $('item-color').value = '#ff4d00';
   $('item-color-text').value = '#ff4d00';
   $('item-visibility').checked = true;
+  $('item-image').value = '';
+  if ($('item-image-file')) $('item-image-file').value = '';
+  setImagePreview('item-image-preview', '');
   fillSectionSelect(section || 'webs');
   if (id) {
     const it = state.items.find((x) => x.id == id);
@@ -412,12 +483,36 @@ function openItemModal(section, id) {
       $('item-color').value = it.color || '#ff4d00';
       $('item-color-text').value = it.color || '#ff4d00';
       $('item-visibility').checked = it.visibility === 'public';
+      $('item-image').value = it.image || '';
+      setImagePreview('item-image-preview', it.image || '');
       fillSectionSelect(it.section);
     }
   }
   openModal('item-modal');
   $('item-title').focus();
 }
+
+// Muestra una vista previa (URL real o blob local) en el <img> indicado.
+function setImagePreview(imgId, url) {
+  const img = $(imgId);
+  if (!img) return;
+  if (url) { img.src = imgUrl(url); img.classList.remove('hidden'); }
+  else { img.removeAttribute('src'); img.classList.add('hidden'); }
+}
+
+// Al elegir un archivo, muestra una vista previa local antes de subirlo.
+function bindImagePreview(fileInputId, previewId) {
+  const fi = $(fileInputId);
+  const img = $(previewId);
+  if (!fi || !img) return;
+  fi.addEventListener('change', () => {
+    const f = fi.files && fi.files[0];
+    if (f) { img.src = URL.createObjectURL(f); img.classList.remove('hidden'); }
+    else { img.removeAttribute('src'); img.classList.add('hidden'); }
+  });
+}
+bindImagePreview('item-image-file', 'item-image-preview');
+bindImagePreview('profile-avatar-file', 'profile-avatar-preview');
 $('item-color').addEventListener('input', () => { $('item-color-text').value = $('item-color').value; });
 $('item-color-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('item-color-text').value)) $('item-color').value = $('item-color-text').value;
@@ -433,16 +528,22 @@ $('item-form').addEventListener('submit', async (e) => {
     err.classList.remove('hidden');
     return;
   }
-  const body = {
-    section: $('item-section').value,
-    title,
-    url: $('item-url').value.trim(),
-    description: $('item-description').value.trim(),
-    icon: $('item-icon').value.trim() || '🔗',
-    color: $('item-color').value,
-    visibility: $('item-visibility').checked ? 'public' : 'private',
-  };
   try {
+    let image = $('item-image').value;
+    const fileInput = $('item-image-file');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      image = await uploadImage(fileInput.files[0]);
+    }
+    const body = {
+      section: $('item-section').value,
+      title,
+      url: $('item-url').value.trim(),
+      description: $('item-description').value.trim(),
+      icon: $('item-icon').value.trim() || '🔗',
+      color: $('item-color').value,
+      image,
+      visibility: $('item-visibility').checked ? 'public' : 'private',
+    };
     if (id) {
       await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify(body) });
     } else {
@@ -490,6 +591,9 @@ $('admin-profile-btn').addEventListener('click', () => {
   $('profile-bio').value = p.bio || '';
   $('profile-accent').value = p.accent || '#ff4d00';
   $('profile-accent-text').value = p.accent || '#ff4d00';
+  $('profile-avatar').value = p.avatar || '';
+  if ($('profile-avatar-file')) $('profile-avatar-file').value = '';
+  setImagePreview('profile-avatar-preview', p.avatar || '');
   openModal('profile-modal');
 });
 $('profile-accent').addEventListener('input', () => { $('profile-accent-text').value = $('profile-accent').value; });
@@ -506,14 +610,20 @@ $('profile-form').addEventListener('submit', async (e) => {
     err.classList.remove('hidden');
     return;
   }
-  const body = {
-    name,
-    emoji: $('profile-emoji').value.trim() || '⚡',
-    tagline: $('profile-tagline').value.trim(),
-    bio: $('profile-bio').value.trim(),
-    accent: $('profile-accent').value,
-  };
   try {
+    let avatar = $('profile-avatar').value;
+    const fileInput = $('profile-avatar-file');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      avatar = await uploadImage(fileInput.files[0]);
+    }
+    const body = {
+      name,
+      emoji: $('profile-emoji').value.trim() || '⚡',
+      tagline: $('profile-tagline').value.trim(),
+      bio: $('profile-bio').value.trim(),
+      accent: $('profile-accent').value,
+      avatar,
+    };
     await api('/api/hub/profile', { method: 'PUT', body: JSON.stringify(body) });
     closeModal('profile-modal');
     state.profile = { ...state.profile, ...body };
@@ -545,6 +655,7 @@ $('admin-logout-btn').addEventListener('click', logout);
       localStorage.removeItem('hub_token');
       state.token = null;
     }
+    initShare();
     loadPublic();
   } catch (e) {
     console.error('boot error', e);

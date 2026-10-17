@@ -166,6 +166,14 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   filter: blur(34px); pointer-events: none; z-index: -1;
 }
 .hero-inner { position: relative; z-index: 2; flex: 1 1 56%; max-width: 640px; }
+.hero-avatar-wrap { margin-bottom: 26px; }
+.hero-avatar {
+  width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--ember);
+  box-shadow: 0 0 0 4px rgba(10,6,4,.6), 0 0 34px rgba(255,90,31,.35);
+  background: var(--surface-2);
+}
+.hero-avatar-wrap.hidden { display: none; }
 .hero-kicker {
   font-family: var(--font-mono); font-size: 12px; letter-spacing: .4em; text-transform: uppercase;
   color: var(--ember-2); margin-bottom: 30px;
@@ -202,6 +210,35 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255, 80, 20, .42), inset 0 1px 0 rgba(255,255,255,.22); }
 .cta svg { transition: transform .3s; }
 .cta:hover svg { transform: translateY(3px); }
+
+/* — compartir la guarida (QR + copiar enlace + WhatsApp) — */
+.hero-share { margin-top: 30px; display: flex; align-items: center; gap: 18px; }
+.share-qr {
+  flex: 0 0 auto; width: 116px; height: 116px; padding: 6px;
+  border: 1px solid var(--line); border-radius: 4px;
+  background: rgba(10, 6, 4, .55);
+  box-shadow: 0 6px 22px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,90,31,.12);
+  transition: transform .25s var(--ease), border-color .25s;
+}
+.share-qr:hover { transform: translateY(-2px); border-color: var(--ember); }
+.share-qr img { display: block; width: 100%; height: auto; border-radius: 2px; }
+.share-body { display: flex; flex-direction: column; gap: 11px; }
+.share-label {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--ivory-dim);
+}
+.share-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 2px;
+  background: transparent; color: var(--ivory);
+  border: 1px solid var(--line);
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: transform .25s var(--ease), border-color .25s, color .25s, background .25s;
+}
+.share-btn:hover { transform: translateY(-2px); border-color: var(--ember); color: var(--ember-2); }
+.share-whatsapp:hover { border-color: #25d366; color: #25d366; }
 
 /* — la mascota protagonista — */
 .mascot-stage {
@@ -316,6 +353,11 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   border: 1px solid var(--line); border-radius: 50%;
   background: radial-gradient(circle at 40% 32%, rgba(255,90,31,.16), rgba(200,29,37,.06));
 }
+.card-img {
+  flex: 0 0 auto; width: 52px; height: 52px; border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--line); background: var(--surface-2);
+}
+.card-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .card-body { min-width: 0; flex: 1; }
 .card-title { font-family: var(--font-display); font-weight: 600; font-size: 1.16rem; color: var(--ivory); }
 .card-desc { font-size: 13.5px; color: var(--ivory-dim); margin-top: 3px; line-height: 1.5; }
@@ -524,6 +566,22 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .color-row { display: flex; gap: 10px; align-items: center; }
 .color-row input[type="color"] { width: 44px; height: 40px; padding: 3px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); cursor: pointer; }
 .color-row input[type="text"] { flex: 1; }
+.file-input {
+  display: block; width: 100%; padding: 10px;
+  background: var(--bg); border: 1px dashed var(--line); border-radius: 4px;
+  color: var(--ivory-dim); font-size: 13px; cursor: pointer;
+}
+.file-input::file-selector-button {
+  margin-right: 10px; padding: 6px 12px; border-radius: 2px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--ivory);
+  font-family: var(--font-body); font-size: 12px;
+}
+.file-input:hover { border-color: var(--ember); }
+.upload-preview {
+  display: block; margin-top: 10px; max-width: 160px; max-height: 160px;
+  border-radius: 4px; border: 1px solid var(--line); object-fit: cover;
+}
+.upload-preview.hidden { display: none; }
 .switch-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; cursor: pointer; }
 .switch-row span:first-child { font-size: 13.5px; color: var(--ivory-dim); }
 .switch-row input { display: none; }
@@ -602,6 +660,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   .hero-kicker::before { display: none; }
   .hero-bio { margin: 0 auto; }
   .hero-cta { justify-content: center; }
+  .hero-share { justify-content: center; text-align: left; }
   .mascot-stage { margin-top: 36px; }
   .mascot { width: min(58vw, 300px); }
   .scroll-hint { display: none; }
