@@ -10,6 +10,16 @@
   <meta property="og:title" content="El Necio Digital — La Guarida" />
   <meta property="og:description" content="Webs, canales, redes, apps, diplomas y proyectos, reunidos en una guarida digital de fantasía oscura." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thenecioia-png.github.io/" />
+  <meta property="og:image" content="https://thenecioia-png.github.io/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="El Necio Digital — La Guarida" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="El Necio Digital — La Guarida" />
+  <meta name="twitter:description" content="Webs, canales, redes, apps, diplomas y proyectos, reunidos en una guarida digital de fantasía oscura." />
+  <meta name="twitter:image" content="https://thenecioia-png.github.io/og-image.png" />
+  <link rel="canonical" href="https://thenecioia-png.github.io/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -28,11 +38,11 @@
         <stop offset="100%" stop-color="#070302"/>
       </linearGradient>
       <filter id="wood-grain1" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.18" numOctaves="5" seed="8" result="n"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.18" numOctaves="3" seed="8" result="n"/>
         <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.26  0 0 0 0 0.12  0 0 0 0 0.05  0.55 0 0 0 0"/>
       </filter>
       <filter id="wood-grain2" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.38" numOctaves="4" seed="23" result="n"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.38" numOctaves="3" seed="23" result="n"/>
         <feColorMatrix in="n" type="matrix" values="0 0 0 0 1.0  0 0 0 0 0.30  0 0 0 0 0.05  0.30 0 0 0 0"/>
       </filter>
       <radialGradient id="wood-emberlight" cx="50%" cy="82%" r="75%">
@@ -80,7 +90,6 @@
         </svg>
         <span class="brand-word" id="nav-name">El Necio Digital</span>
       </a>
-      <span id="nav-emoji" hidden></span>
 
       <nav class="mastnav" id="rail-icons" aria-label="Secciones"></nav>
 
@@ -297,7 +306,7 @@
   </footer>
 
   <!-- ── Asistente "El Diablito" ───────────────────────────────────── -->
-  <button class="chat-fab" id="chat-fab" aria-label="Abrir asistente" title="Habla con El Diablito" style="display:none">
+  <button class="chat-fab" id="chat-fab" aria-label="Abrir asistente" title="Habla con El Diablito">
     <span class="chat-fab-glow"></span>
     <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
       <path d="M16 4 C 13 4, 12 8, 10 8 C 9 8, 8 7, 7 9 C 9 11, 10 12, 11 15 L 16 15 L 21 15 C 22 12, 23 11, 25 9 C 24 7, 23 8, 22 8 C 20 8, 19 4, 16 4 Z" fill="#c81d25"/>
@@ -414,25 +423,22 @@
 
   <!-- ── Modales de administración ─────────────────────────────────── -->
   <div class="modal-backdrop hidden" id="login-modal">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
       <button class="modal-close" data-close="login-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <h2 class="modal-title">Acceso a la guarida</h2>
+      <h2 class="modal-title" id="login-title">Acceso a la guarida</h2>
       <p class="modal-sub">Entra para cuidar tus obras.</p>
       <div class="modal-error hidden" id="login-error"></div>
       <form id="login-form" autocomplete="off">
-        <label class="field"><span>Email</span><input type="email" id="login-email" placeholder="tu@email.com" required /></label>
-        <label class="field"><span>Contraseña</span><input type="password" id="login-password" placeholder="••••••••" required /></label>
-        <div class="field hidden" id="login-2fa-wrap">
-          <span>Código de verificación (2FA)</span>
-          <input type="text" id="login-2fa" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+        <label class="field" id="login-email-field"><span>Email</span><input type="email" id="login-email" placeholder="tu@email.com" required /></label>
+        <label class="field" id="login-password-field"><span>Contraseña</span><input type="password" id="login-password" placeholder="••••••••" required /></label>
+        <label class="field hidden" id="login-2fa-field"><span>Código de verificación (2FA)</span><input type="text" id="login-2fa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" /></label>
+        <button type="submit" class="btn btn-primary btn-block" id="login-submit">Entrar</button>
       </form>
     </div>
   </div>
 
   <div class="modal-backdrop hidden" id="item-modal">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="item-modal-title">
       <button class="modal-close" data-close="item-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <h2 class="modal-title" id="item-modal-title">Agregar obra</h2>
       <div class="modal-error hidden" id="item-error"></div>
@@ -455,9 +461,9 @@
   </div>
 
   <div class="modal-backdrop hidden" id="profile-modal">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
       <button class="modal-close" data-close="profile-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <h2 class="modal-title">Editar perfil</h2>
+      <h2 class="modal-title" id="profile-title">Editar perfil</h2>
       <div class="modal-error hidden" id="profile-error"></div>
       <form id="profile-form" autocomplete="off">
         <div class="field-row">
@@ -471,17 +477,6 @@
         </label>
         <button type="submit" class="btn btn-primary btn-block">Guardar perfil</button>
       </form>
-    </div>
-  </div>
-
-  <div class="modal-backdrop hidden" id="security-modal">
-    <div class="modal">
-      <button class="modal-close" data-close="security-modal" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <h2 class="modal-title">Seguridad — doble autenticación</h2>
-      <p class="modal-sub">Protege tu cuenta con un código de tu app de autenticación.</p>
-      <div class="modal-error hidden" id="security-error"></div>
-      <div id="security-status" class="security-status"></div>
-      <div id="security-body"></div>
     </div>
   </div>
 

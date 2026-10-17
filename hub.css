@@ -20,7 +20,7 @@
   --smoke: #4a3626;
   --ivory: #f3e9d8;
   --ivory-dim: #b9a995;
-  --ivory-faint: #85725f;
+  --ivory-faint: #8f7d68;
 
   --accent: #ff5a1f;
   --ink-dim: var(--ivory-dim); /* alias legado */
@@ -292,17 +292,23 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   display: grid; grid-template-columns: 1fr;
 }
 .card {
-  position: relative; display: flex; align-items: center; gap: 18px;
-  padding: 20px 6px;
+  position: relative;
   border-bottom: 1px solid var(--line-soft);
-  transition: background .25s, padding .25s;
+  transition: background .25s;
+}
+.card-link {
+  display: flex; align-items: center; gap: 18px;
+  padding: 20px 6px;
+  color: inherit;
+  transition: padding .25s;
 }
 .card:first-child { border-top: 1px solid var(--line-soft); }
 .card::before {
   content: ''; position: absolute; left: 0; top: -1px; height: 1px; width: 0;
   background: var(--ember); transition: width .35s var(--ease);
 }
-.card:hover { background: rgba(255, 90, 31, .045); padding-left: 14px; }
+.card:hover { background: rgba(255, 90, 31, .045); }
+.card:hover .card-link { padding-left: 14px; }
 .card:hover::before { width: 100%; }
 .card-icon {
   flex: 0 0 auto; width: 44px; height: 44px;
@@ -526,12 +532,6 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .switch-row input:checked + .switch { background: rgba(255,90,31,.3); border-color: var(--ember); }
 .switch-row input:checked + .switch::after { transform: translateX(20px); background: var(--ember-2); }
 
-.security-status { font-size: 13px; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; }
-.security-status.on { background: rgba(60,160,90,.14); border: 1px solid #2f9e55; color: #a8e6c0; }
-.security-status.off { background: rgba(200,29,37,.12); border: 1px solid var(--blood); color: #ffb4b4; }
-.secret-box { font-family: var(--font-mono); font-size: 13px; padding: 12px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); word-break: break-all; margin: 12px 0; }
-.hint { font-size: 12.5px; color: var(--ivory-dim); line-height: 1.6; margin-bottom: 12px; }
-
 /* toasts */
 .toast-container { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .toast {
@@ -615,7 +615,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   .section-head { align-items: center; gap: 16px; }
   .section-num { font-size: clamp(3rem, 18vw, 5rem); }
   .section-icon { display: none; }
-  .card { gap: 14px; padding: 16px 4px; }
+  .card-link { gap: 14px; padding: 16px 4px; }
   .card-icon { width: 40px; height: 40px; font-size: 19px; }
   .admin-bar { top: 140px; }
 }

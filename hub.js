@@ -17,8 +17,6 @@ const state = {
   user: null,
   profile: null,
   items: [],
-  tempToken: null,   // token temporal durante el flujo 2FA
-  loginPhase: 'creds',
 };
 
 const $ = (id) => document.getElementById(id);
@@ -36,15 +34,6 @@ function safeUrl(u) {
     return (p.protocol === 'http:' || p.protocol === 'https:' || p.protocol === 'mailto:' || p.protocol === 'tel:') ? p.href : '';
   } catch { return ''; }
 }
-async function api(path, opts = {}) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
-  const res = await fetch(path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
-  let data = null;
-  try { data = await res.json(); } catch { /* no body */ }
-  if (!res.ok) throw new Error((data && data.error) || 'Error del servidor');
-  return data;
-}
 function toast(msg, kind) {
   const c = $('toast-container');
   const el = document.createElement('div');
@@ -55,23 +44,46 @@ function toast(msg, kind) {
   setTimeout(() => el.remove(), 3000);
 }
 
-/* ── modals ────────────────────────────────────────────────────────── */
-function openModal(id) { $(id).classList.remove('hidden'); }
-function closeModal(id) { $(id).classList.add('hidden'); }
+/* ── modals (accesibles: foco al abrir, trap de Tab y retorno de foco) ── */
+let lastFocused = null;
+function openModal(id) {
+  const el = $(id);
+  if (!el) return;
+  lastFocused = document.activeElement;
+  el.classList.remove('hidden');
+  const focusable = el.querySelector('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])');
+  (focusable || el).focus();
+}
+function closeModal(id) {
+  const el = $(id);
+  if (!el) return;
+  el.classList.add('hidden');
+  if (lastFocused && typeof lastFocused.focus === 'function') { lastFocused.focus(); lastFocused = null; }
+}
 document.querySelectorAll('[data-close]').forEach((btn) => {
   btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close')));
 });
 document.querySelectorAll('.modal-backdrop').forEach((bd) => {
-  bd.addEventListener('click', (e) => { if (e.target === bd) bd.classList.add('hidden'); });
+  bd.addEventListener('click', (e) => { if (e.target === bd) closeModal(bd.id); });
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop').forEach((b) => b.classList.add('hidden'));
+  const open = document.querySelector('.modal-backdrop:not(.hidden)');
+  if (!open) return;
+  if (e.key === 'Escape') { closeModal(open.id); return; }
+  if (e.key !== 'Tab') return;
+  const focusables = Array.from(open.querySelectorAll('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])')).filter((el) => el.offsetParent !== null);
+  if (!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
 
 /* ── render ────────────────────────────────────────────────────────── */
 function applyAccent(color) {
   if (color && /^#[0-9a-fA-F]{6}$/.test(color)) {
     document.documentElement.style.setProperty('--accent', color);
+    document.documentElement.style.setProperty('--ember', color);
   }
 }
 
@@ -100,7 +112,6 @@ function renderNavLinks() {
 
 function renderHero() {
   const p = state.profile || {};
-  $('nav-emoji').textContent = p.emoji || '⚡';
   $('nav-name').textContent = p.name || 'El Necio';
   $('hero-name').innerHTML = highlightName(p.name || 'El Necio Digital');
   $('hero-tagline').textContent = p.tagline || 'Todo lo mío, en un solo lugar.';
@@ -124,7 +135,7 @@ function renderSections() {
   wrap.innerHTML = '';
   const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   SECTIONS.forEach((sec, idx) => {
-    const items = state.items.filter((i) => i.section === sec.id);
+    const items = state.items.filter((i) => i.section === sec.id && (isAdmin || i.visibility !== 'private'));
     const el = document.createElement('section');
     el.className = 'section reveal';
     el.id = 'section-' + sec.id;
@@ -155,6 +166,7 @@ function renderSections() {
 function cardHTML(it, isAdmin) {
   const url = safeUrl(it.url);
   const color = it.color || '#ff4d00';
+  const isPrivate = it.visibility === 'private';
   const inner = `
     <span class="card-icon" style="color:${esc(color)}">${esc(it.icon || '🔗')}</span>
     <span class="card-body">
@@ -166,26 +178,22 @@ function cardHTML(it, isAdmin) {
   const adminControls = isAdmin ? `
     <span class="card-admin">
       <button data-action="edit" data-id="${it.id}" title="Editar">✎</button>
-      <button data-action="toggle" data-id="${it.id}" title="Público/privado">${it.visibility === 'public' ? '👁' : '🙈'}</button>
+      <button data-action="toggle" data-id="${it.id}" title="Público/privado">${isPrivate ? '🙈' : '👁'}</button>
       <button data-action="del" data-id="${it.id}" class="del" title="Eliminar">✕</button>
     </span>` : '';
 
-  const flag = isAdmin && it.visibility !== 'public' ? `<span class="card-flag">privado</span>` : '';
+  const flag = isAdmin && isPrivate ? `<span class="card-flag">privado</span>` : '';
 
-  if (url) {
-    return `<a class="card${isAdmin && it.visibility !== 'public' ? ' is-private' : ''}" href="${esc(url)}" target="_blank" rel="noopener noreferrer" data-id="${it.id}">${flag}${inner}${arrow}${adminControls}</a>`;
-  }
-  return `<div class="card${isAdmin && it.visibility !== 'public' ? ' is-private' : ''}" data-id="${it.id}">${flag}${inner}${arrow}${adminControls}</div>`;
+  // El enlace solo envuelve el contenido clicable; los botones de admin van
+  // como hermanos, no dentro del <a> (HTML válido, sin <button> anidado).
+  const link = url
+    ? `<a class="card-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${inner}${arrow}</a>`
+    : `<div class="card-link">${inner}${arrow}</div>`;
+
+  return `<div class="card${isAdmin && isPrivate ? ' is-private' : ''}" data-id="${it.id}">${flag}${link}${adminControls}</div>`;
 }
 
 function bindCards() {
-  document.querySelectorAll('.card').forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
-    });
-  });
   document.querySelectorAll('[data-add]').forEach((b) => {
     b.addEventListener('click', () => openItemModal(b.getAttribute('data-add')));
   });
@@ -232,44 +240,60 @@ const STATIC_DATA = {
   ]
 };
 
-/* ── Almacén local (sin backend) ──────────────────────────────────── */
-const LS_ITEMS = 'necio_hub_items';
-const LS_PROFILE = 'necio_hub_profile';
+/* ── Backend API (autenticación y vitrina reales) ─────────────────── */
+const API_BASE = 'https://the-necio-api.onrender.com';
 const ADMIN_EMAIL = 'admin@theneciodigital.com';
-const ADMIN_PASS_HASH = '5a55c7873ed7338f35d782adb513d336a36086ddec0fa4b6444fda6d440387c2';
-const ADMIN_TOKEN = 'necio-local-admin';
+const ADMIN_TOKEN = 'necio-local-admin'; // marcador legacy (ya no se emite)
 
-async function sha256(text) {
-  const data = new TextEncoder().encode(text);
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-function loadItems() {
+async function api(path, opts = {}) {
+  const headers = { ...(opts.headers || {}) };
+  if (opts.body) headers['Content-Type'] = 'application/json';
+  const token = localStorage.getItem('hub_token');
+  if (token && token !== ADMIN_TOKEN) headers['Authorization'] = 'Bearer ' + token;
+  let res;
   try {
-    const raw = localStorage.getItem(LS_ITEMS);
-    if (raw) { const d = JSON.parse(raw); if (Array.isArray(d)) return d; }
-  } catch {}
-  return STATIC_DATA.items.map((x) => ({ ...x }));
+    res = await fetch(API_BASE + path, { ...opts, headers });
+  } catch {
+    const e = new Error('Sin conexión con el servidor.');
+    e.offline = true;
+    throw e;
+  }
+  let data = {};
+  try { data = await res.json(); } catch {}
+  if (!res.ok) {
+    const err = new Error(data.error || ('Error ' + res.status));
+    err.status = res.status;
+    throw err;
+  }
+  return data;
 }
-function saveItems(items) { localStorage.setItem(LS_ITEMS, JSON.stringify(items)); }
-function loadProfile() {
-  try {
-    const raw = localStorage.getItem(LS_PROFILE);
-    if (raw) { const p = JSON.parse(raw); if (p && typeof p === 'object') return p; }
-  } catch {}
-  return { ...STATIC_DATA.profile };
-}
-function saveProfile(p) { localStorage.setItem(LS_PROFILE, JSON.stringify(p)); }
 
-function loadPublic() {
-  state.profile = loadProfile();
-  state.items = loadItems();
+function staticItems() { return STATIC_DATA.items.map((x) => ({ ...x })); }
+
+// Vista pública: datos reales del servidor; si no responde, fallback estático.
+async function loadPublic() {
+  try {
+    const d = await api('/api/hub/public');
+    state.profile = d.profile || STATIC_DATA.profile;
+    state.items = Array.isArray(d.items) ? d.items : [];
+  } catch {
+    state.profile = { ...STATIC_DATA.profile };
+    state.items = staticItems();
+  }
   renderHero();
   renderSections();
   renderNavLinks();
 }
-function loadAdmin() {
-  state.items = loadItems();
+
+// Vista admin: todos los items (incluye privados), con token real.
+async function loadAdmin() {
+  try {
+    state.items = await api('/api/hub');
+  } catch (e) {
+    if (e.status === 401) { logout(); return; }
+    toast('No se pudieron cargar los elementos del servidor.', 'err');
+    state.items = [];
+  }
   renderSections();
 }
 
@@ -293,40 +317,70 @@ function logout() {
 }
 
 /* ── login + 2FA ───────────────────────────────────────────────────── */
+let pending2fa = null;
 $('admin-toggle').addEventListener('click', () => {
   if (state.token) { logout(); return; }
   resetLogin();
   openModal('login-modal');
 });
 function resetLogin() {
-  state.loginPhase = 'creds';
-  state.tempToken = null;
+  pending2fa = null;
   $('login-error').classList.add('hidden');
-  $('login-2fa-wrap').classList.add('hidden');
   $('login-password').value = '';
-  $('login-2fa').value = '';
+  $('login-2fa-code').value = '';
+  $('login-2fa-field').classList.add('hidden');
+  $('login-password-field').classList.remove('hidden');
+  $('login-email').readOnly = false;
+  $('login-submit').textContent = 'Entrar';
+}
+function finishLogin(r) {
+  state.token = r.token;
+  state.user = r.user;
+  localStorage.setItem('hub_token', r.token);
+  pending2fa = null;
+  closeModal('login-modal');
+  resetLogin();
+  enterAdmin(r.user);
+  toast('Bienvenido, ' + (r.user && (r.user.name || r.user.username) || 'El Necio'));
 }
 $('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('login-error');
   err.classList.add('hidden');
+
+  // Paso 2: verificar código 2FA
+  if (pending2fa) {
+    const code = $('login-2fa-code').value.trim();
+    if (!code) { err.textContent = 'Escribe el código de 6 dígitos.'; err.classList.remove('hidden'); return; }
+    try {
+      const r = await api('/api/auth/2fa/verify', { method: 'POST', body: JSON.stringify({ temp_token: pending2fa, code }) });
+      finishLogin(r);
+    } catch (er) {
+      err.textContent = er.message || 'Código inválido.';
+      err.classList.remove('hidden');
+    }
+    return;
+  }
+
   const email = $('login-email').value.trim().toLowerCase();
   const password = $('login-password').value;
   try {
-    const passHash = await sha256(password);
-    if (email === ADMIN_EMAIL && passHash === ADMIN_PASS_HASH) {
-      state.token = ADMIN_TOKEN;
-      localStorage.setItem('hub_token', ADMIN_TOKEN);
-      closeModal('login-modal');
-      resetLogin();
-      enterAdmin({ name: 'El Necio', email: ADMIN_EMAIL });
-      toast('Bienvenido, El Necio');
-    } else {
-      err.textContent = 'Email o contraseña incorrectos.';
-      err.classList.remove('hidden');
+    const r = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+    if (r.requires2fa) {
+      pending2fa = r.temp_token;
+      $('login-2fa-field').classList.remove('hidden');
+      $('login-password-field').classList.add('hidden');
+      $('login-password').value = '';
+      $('login-2fa-code').value = '';
+      $('login-email').readOnly = true;
+      $('login-submit').textContent = 'Verificar';
+      $('login-2fa-code').focus();
+      return;
     }
+    finishLogin(r);
   } catch (er) {
-    err.textContent = 'No se pudo verificar. Inténtalo de nuevo.';
+    if (er.status === 429) err.textContent = 'Demasiados intentos. Espera 15 minutos.';
+    else err.textContent = er.message || 'Email o contraseña incorrectos.';
     err.classList.remove('hidden');
   }
 });
@@ -368,7 +422,7 @@ $('item-color').addEventListener('input', () => { $('item-color-text').value = $
 $('item-color-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('item-color-text').value)) $('item-color').value = $('item-color-text').value;
 });
-$('item-form').addEventListener('submit', (e) => {
+$('item-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('item-error');
   err.classList.add('hidden');
@@ -388,39 +442,42 @@ $('item-form').addEventListener('submit', (e) => {
     color: $('item-color').value,
     visibility: $('item-visibility').checked ? 'public' : 'private',
   };
-  const items = loadItems();
-  if (id) {
-    const it = items.find((x) => String(x.id) === String(id));
-    if (it) Object.assign(it, body);
-  } else {
-    const nextId = items.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
-    items.push({ id: nextId, ...body });
+  try {
+    if (id) {
+      await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify(body) });
+    } else {
+      await api('/api/hub', { method: 'POST', body: JSON.stringify(body) });
+    }
+    closeModal('item-modal');
+    await loadAdmin();
+    toast(id ? 'Elemento actualizado' : 'Elemento agregado', 'ok');
+  } catch (er) {
+    err.textContent = er.message || 'No se pudo guardar.';
+    err.classList.remove('hidden');
   }
-  saveItems(items);
-  state.items = items;
-  closeModal('item-modal');
-  loadAdmin();
-  toast(id ? 'Elemento actualizado' : 'Elemento agregado', 'ok');
 });
 
-function deleteItem(id) {
+async function deleteItem(id) {
   if (!confirm('¿Eliminar este elemento?')) return;
-  const items = loadItems().filter((x) => String(x.id) !== String(id));
-  saveItems(items);
-  state.items = items;
-  loadAdmin();
-  toast('Elemento eliminado');
+  try {
+    await api('/api/hub/' + id, { method: 'DELETE' });
+    await loadAdmin();
+    toast('Elemento eliminado');
+  } catch (er) {
+    toast(er.message || 'No se pudo eliminar.', 'err');
+  }
 }
-function toggleItem(id) {
-  const items = loadItems();
-  const it = items.find((x) => String(x.id) === String(id));
+async function toggleItem(id) {
+  const it = state.items.find((x) => String(x.id) === String(id));
   if (!it) return;
-  const wasPublic = it.visibility === 'public';
-  it.visibility = wasPublic ? 'private' : 'public';
-  saveItems(items);
-  state.items = items;
-  loadAdmin();
-  toast(wasPublic ? 'Ahora es privado' : 'Ahora es público', 'ok');
+  const next = it.visibility === 'public' ? 'private' : 'public';
+  try {
+    await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify({ visibility: next }) });
+    await loadAdmin();
+    toast(next === 'private' ? 'Ahora es privado' : 'Ahora es público', 'ok');
+  } catch (er) {
+    toast(er.message || 'No se pudo cambiar la visibilidad.', 'err');
+  }
 }
 
 /* ── profile ───────────────────────────────────────────────────────── */
@@ -439,7 +496,7 @@ $('profile-accent').addEventListener('input', () => { $('profile-accent-text').v
 $('profile-accent-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('profile-accent-text').value)) $('profile-accent').value = $('profile-accent-text').value;
 });
-$('profile-form').addEventListener('submit', (e) => {
+$('profile-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('profile-error');
   err.classList.add('hidden');
@@ -456,125 +513,37 @@ $('profile-form').addEventListener('submit', (e) => {
     bio: $('profile-bio').value.trim(),
     accent: $('profile-accent').value,
   };
-  saveProfile({ ...loadProfile(), ...body });
-  closeModal('profile-modal');
-  state.profile = { ...state.profile, ...body };
-  renderHero();
-  toast('Perfil actualizado', 'ok');
-});
-
-/* ── security (2FA) ────────────────────────────────────────────────── */
-$('admin-security-btn')?.addEventListener('click', openSecurity);
-async function openSecurity() {
-  $('security-error').classList.add('hidden');
-  openModal('security-modal');
   try {
-    const st = await api('/api/auth/2fa/status');
-    renderSecurity(st.enabled);
-  } catch (e) {
-    $('security-error').textContent = e.message;
-    $('security-error').classList.remove('hidden');
+    await api('/api/hub/profile', { method: 'PUT', body: JSON.stringify(body) });
+    closeModal('profile-modal');
+    state.profile = { ...state.profile, ...body };
+    renderHero();
+    toast('Perfil actualizado', 'ok');
+  } catch (er) {
+    err.textContent = er.message || 'No se pudo guardar el perfil.';
+    err.classList.remove('hidden');
   }
-}
-function renderSecurity(enabled) {
-  const status = $('security-status');
-  const body = $('security-body');
-  if (enabled) {
-    status.className = 'security-status on';
-    status.textContent = '🔒 Doble autenticación ACTIVADA';
-    body.innerHTML = `
-      <p class="hint">Tu cuenta está protegida. Al iniciar sesión se te pedirá un código de tu app de autenticación.</p>
-      <label class="field"><span>Código actual (para desactivar)</span>
-        <input type="text" id="sec-code" inputmode="numeric" maxlength="6" placeholder="000000" />
-      </label>
-      <button class="btn btn-danger" id="sec-disable">Desactivar 2FA</button>`;
-    $('sec-disable').addEventListener('click', async () => {
-      const code = $('sec-code').value.trim();
-      try {
-        await api('/api/auth/2fa/disable', { method: 'POST', body: JSON.stringify({ code }) });
-        toast('2FA desactivado', 'ok');
-        renderSecurity(false);
-      } catch (e) { secError(e.message); }
-    });
-  } else {
-    status.className = 'security-status off';
-    status.textContent = '⚠️ Doble autenticación DESACTIVADA';
-    body.innerHTML = `
-      <button class="btn btn-primary" id="sec-start">Activar 2FA</button>`;
-    $('sec-start').addEventListener('click', startSetup);
-  }
-}
-function secError(msg) {
-  const err = $('security-error');
-  err.textContent = msg;
-  err.classList.remove('hidden');
-}
-async function startSetup() {
-  try {
-    const setup = await api('/api/auth/2fa/setup', { method: 'POST' });
-    const status = $('security-status');
-    status.className = 'security-status off';
-    status.textContent = '🔑 Escanea o copia esta clave en tu app de autenticación';
-    const body = $('security-body');
-    body.innerHTML = `
-      <div class="hint">1. Abre Google Authenticator, Authy o similar.<br>
-        2. Añade una cuenta nueva y escanea el QR o escribe esta clave manualmente.</div>
-      <div class="secret-box">${esc(setup.secret)}</div>
-      <button class="btn btn-ghost" id="sec-copy">Copiar clave</button>
-      <label class="field"><span>Introduce el código de 6 dígitos</span>
-        <input type="text" id="sec-confirm" inputmode="numeric" maxlength="6" placeholder="000000" />
-      </label>
-      <button class="btn btn-primary" id="sec-confirm-btn">Confirmar y activar</button>`;
-    $('sec-copy').addEventListener('click', () => {
-      navigator.clipboard.writeText(setup.secret).then(() => toast('Clave copiada', 'ok'));
-    });
-    $('sec-confirm-btn').addEventListener('click', async () => {
-      const code = $('sec-confirm').value.trim();
-      try {
-        await api('/api/auth/2fa/confirm', { method: 'POST', body: JSON.stringify({ code }) });
-        toast('2FA activado correctamente', 'ok');
-        renderSecurity(true);
-      } catch (e) { secError(e.message); }
-    });
-  } catch (e) { secError(e.message); }
-}
-
-/* ── API token (vía directa para la IA) ────────────────────────────── */
-$('admin-token-btn')?.addEventListener('click', async () => {
-  try {
-    const res = await api('/api/hub/token', { method: 'POST' });
-    showToken(res.token);
-  } catch (e) { toast(e.message, 'err'); }
 });
-function showToken(token) {
-  const bd = document.createElement('div');
-  bd.className = 'modal-backdrop';
-  bd.innerHTML = `
-    <div class="modal">
-      <h2 class="modal-title">Token de API</h2>
-      <p class="modal-sub">Esta clave permite a tu IA editar el hub sin tu contraseña. Guárdala en un lugar seguro.</p>
-      <div class="secret-box" style="font-size:0.8rem">${esc(token)}</div>
-      <div style="display:flex;gap:10px;margin-top:16px">
-        <button class="btn btn-primary" id="tok-copy">Copiar</button>
-        <button class="btn btn-ghost" id="tok-close">Cerrar</button>
-      </div>
-    </div>`;
-  bd.querySelector('#tok-copy').addEventListener('click', () => {
-    navigator.clipboard.writeText(token).then(() => toast('Token copiado', 'ok'));
-  });
-  bd.querySelector('#tok-close').addEventListener('click', () => bd.remove());
-  bd.addEventListener('click', (e) => { if (e.target === bd) bd.remove(); });
-  document.body.appendChild(bd);
-}
 
 /* ── boot ──────────────────────────────────────────────────────────── */
 $('admin-logout-btn').addEventListener('click', logout);
 
 (async function boot() {
   try {
+    // Token legacy (ya no se emite) o sin token → vista pública.
+    if (state.token && state.token !== ADMIN_TOKEN) {
+      try {
+        const user = await api('/api/me');
+        enterAdmin(user.user || user);
+        return;
+      } catch {
+        localStorage.removeItem('hub_token');
+        state.token = null;
+      }
+    }
     if (state.token === ADMIN_TOKEN) {
-      enterAdmin({ name: 'El Necio', email: ADMIN_EMAIL });
-      return;
+      localStorage.removeItem('hub_token');
+      state.token = null;
     }
     loadPublic();
   } catch (e) {
@@ -642,7 +611,6 @@ $('admin-logout-btn').addEventListener('click', logout);
     radio.current = id;
     radio.audio = new Audio(st.stream);
     radio.audio.volume = Number($('radio-vol')?.value || 75) / 100;
-    radio.audio.crossOrigin = 'anonymous';
     radio.audio.play().then(() => setPlaying(true)).catch(() => {
       setPlaying(false);
       toast('No se pudo sintonizar esta emisora ahora mismo.', 'err');
@@ -694,6 +662,25 @@ $('admin-logout-btn').addEventListener('click', logout);
 
   $('chat-fab')?.addEventListener('click', () => $('chat-panel').classList.toggle('hidden'));
   $('chat-close')?.addEventListener('click', () => $('chat-panel').classList.add('hidden'));
+  function diablitoReply(msg) {
+    const m = msg.toLowerCase();
+    const has = (...words) => words.some((w) => m.includes(w));
+    if (has('hola', 'hey', 'buenas', 'saludos', 'qué tal', 'que tal')) return '¡Hola, necio! Pasa, la guarida está calentita. 🔥';
+    if (has('quién eres', 'quien eres', 'cómo te llamas', 'como te llamas', 'tu nombre')) return 'Soy El Diablito, el diablillo travieso de la guarida. Cuido los enlaces y me río de todo. 😈';
+    if (has('música', 'musica', 'canción', 'cancion', 'spotify', 'neon heart', 'álbum', 'album')) return 'La música de NEON HEART está en Spotify y YouTube. Busca la sección Canales o Contenido. 🎵';
+    if (has('youtube', 'canal', 'video', 'vídeo', 'narrador', 'documental')) return 'El Narrador de Historias es el canal de documentales. Dale en la sección Canales. 📺';
+    if (has('github', 'código', 'codigo', 'proyecto', 'programar', 'app', 'aplicación')) return 'Más de 50 proyectos en GitHub. Mira la sección Webs o Apps. 🐙';
+    if (has('libro', 'kdp', 'amazon', 'escribir')) return 'Los libros van a Amazon KDP, próximamente. Paciencia, necio. 📚';
+    if (has('email', 'contacto', 'correo', 'mensaje', 'escribirte')) return 'Escríbeme a thenecioia@gmail.com. Está en la sección Redes. ✉️';
+    if (has('radio', 'emisora', 'escuchar', 'música en vivo', 'musica en vivo')) return 'La radio está abajo a la izquierda. Elige una emisora y dale al play. 📻';
+    if (has('clima', 'tiempo', 'lluvia', 'llueve', 'sol', 'frío', 'frio', 'calor')) return 'El clima de tu zona está arriba, en la cabecera. Si no sale, es que aún me estoy asomando. ☀️';
+    if (has('gracias', 'genial', 'bueno', 'cool', 'me gusta')) return 'De nada. Que el fuego nunca duerma. 😏';
+    if (has('adiós', 'adios', 'chao', 'hasta luego', 'bye', 'me voy')) return 'Vuelve cuando quieras, la puerta siempre está abierta (y caliente). 🔥';
+    if (has('creó', 'creo', 'creador', 'te hizo', 'denison', 'el necio', 'dueño')) return 'Me hizo El Necio. Todo lo de aquí es suyo: webs, música, historias, todo.';
+    if (has('secreto', 'misterio', 'oculto', 'escondido')) return 'Pssst… hay cosas que solo se ven entrando como admin. Pero yo no cuento nada. 🤫';
+    return 'Mmm, no te he entendido del todo. Prueba a preguntar por la música, los canales, los proyectos o cómo contactar. 😈';
+  }
+
   $('chat-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('chat-input');
@@ -703,12 +690,12 @@ $('admin-logout-btn').addEventListener('click', logout);
     addChatMsg('user', msg);
     const typing = addChatMsg('bot', '', true);
     try {
-      const res = await api('/api/hub/assistant', { method: 'POST', body: JSON.stringify({ message: msg }) });
+      const r = await api('/api/hub/assistant', { method: 'POST', body: JSON.stringify({ message: msg }) });
       typing.remove();
-      addChatMsg('bot', res.reply || '…');
-    } catch (err) {
+      addChatMsg('bot', (r && r.reply) || diablitoReply(msg));
+    } catch {
       typing.remove();
-      addChatMsg('bot', err.message || 'Ups, El Diablito se escondió un momento.');
+      addChatMsg('bot', diablitoReply(msg));
     }
   });
 
@@ -990,6 +977,7 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
 
     function tick(t) {
+      if (document.hidden) { requestAnimationFrame(tick); return; }
       ctx.clearRect(0, 0, W, H);
 
       if (!reduceMotion && embers.length < 42 && Math.random() < 0.35) spawnEmber();
