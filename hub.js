@@ -82,10 +82,11 @@ function safeUrl(u) {
     return (p.protocol === 'http:' || p.protocol === 'https:' || p.protocol === 'mailto:' || p.protocol === 'tel:') ? p.href : '';
   } catch { return ''; }
 }
+const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '' : 'https://the-necio-api.onrender.com';
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json' };
   if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
-  const res = await fetch(path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  const res = await fetch(API_BASE + path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
   let data = null;
   try { data = await res.json(); } catch { /* no body */ }
   if (!res.ok) throw new Error((data && data.error) || 'Error del servidor');
@@ -633,7 +634,7 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
     if (radio.audio) { try { radio.audio.pause(); radio.audio.src = ''; } catch {} }
     radio.current = id;
-    radio.audio = new Audio('/api/radio/stream/' + encodeURIComponent(id));
+    radio.audio = new Audio(API_BASE + '/api/radio/stream/' + encodeURIComponent(id));
     radio.audio.volume = Number($('radio-vol')?.value || 75) / 100;
     radio.audio.crossOrigin = 'anonymous';
     $('radio-flag').textContent = st.country;
