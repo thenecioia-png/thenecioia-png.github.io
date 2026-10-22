@@ -12,11 +12,59 @@ const SECTIONS = [
   { id: 'contenido', label: 'Contenido', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>' },
 ];
 
+/* ── Iconos SVG de línea (reemplazan los emojis genéricos, coherentes con el estilo de fuego) ── */
+const ICON_MAP = {
+  '⚡': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>',
+  '📺': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg>',
+  '🎵': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>',
+  '🤖': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="2"/><circle cx="9" cy="13.5" r="1.2"/><circle cx="15" cy="13.5" r="1.2"/><path d="M12 8V5"/></svg>',
+  '👤': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+  '📘': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h7z"/></svg>',
+  '📕': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h7z"/></svg>',
+  '📗': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h7z"/></svg>',
+  '📚': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h7z"/></svg>',
+  '🎬': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>',
+  '📸': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>',
+  '🎧': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>',
+  '✉️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  '✉': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  '📇': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M6 15.5c0-1.3 1-2.2 2.5-2.2s2.5.9 2.5 2.2"/><path d="M13.5 10h5M13.5 13.5h5"/></svg>',
+  '📰': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h15v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M19 5h1a1 1 0 0 1 1 1v9"/><path d="M7 9h9M7 12h9M7 15h5"/></svg>',
+  '💰': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>',
+  '📜': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-5-3-5 3V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h6"/></svg>',
+  '🛒': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.2 11h10.6L20 8H6"/></svg>',
+  '🚢': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c1.5 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M5 18h14l-1 3H6z"/><path d="M12 3v6M9 6l3 3 3-3"/></svg>',
+  '🌐': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
+  '🧭': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
+  '🛍️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12H7.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+  '🎯': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+  '🏢': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5l8-3v19"/><path d="M12 21V10l8 3v8"/><path d="M7 9h2M7 13h2M7 17h2M15 15h2M15 18h2"/></svg>',
+  '⚖️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 21h8"/><path d="M5 7h14"/><path d="M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z"/></svg>',
+  '📦': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+  '🛡️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-3 6.8-7 9-4-2.2-7-4.8-7-9V6z"/></svg>',
+  '📊': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg>',
+  '🏷️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="8" cy="8" r="1.5"/></svg>',
+  '📣': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l9 5V5L6 10H4a1 1 0 0 0-1 1z"/><path d="M18 9a4 4 0 0 1 0 6"/></svg>',
+  '©️': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2a3 3 0 1 0 0 5.6"/></svg>',
+  '🤝': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11 4 8v5a3 3 0 0 0 3 3h2"/><path d="M17 11l3-3v5a3 3 0 0 1-3 3h-2"/><path d="M7 11a2.5 2.5 0 0 1 5 0v5h2a2.5 2.5 0 0 1 5 0"/></svg>',
+  '🧠': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 1 5.8A3 3 0 0 0 9 20a3 3 0 0 0 3-3v-1"/><path d="M15 3a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-1 5.8A3 3 0 0 1 15 20a3 3 0 0 1-3-3v-1"/><path d="M12 6v8"/></svg>',
+  '🛃': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5c0 4.5-3 7.5-8 10-5-2.5-8-5.5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+  '🎓': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 9v5"/></svg>',
+  '💿': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>',
+  '🔗': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 4 4l4-4a4 4 0 0 0-4-4M14 10a4 4 0 0 0-4-4L6 10a4 4 0 0 0 4 4"/></svg>',
+};
+function iconSvg(icon) {
+  const i = icon || '🔗';
+  return ICON_MAP[i] || esc(i);
+}
+
 const state = {
   token: localStorage.getItem('hub_token') || null,
   user: null,
   profile: null,
   items: [],
+  tempToken: null,   // token temporal durante el flujo 2FA
+  loginPhase: 'creds',
 };
 
 const $ = (id) => document.getElementById(id);
@@ -34,12 +82,14 @@ function safeUrl(u) {
     return (p.protocol === 'http:' || p.protocol === 'https:' || p.protocol === 'mailto:' || p.protocol === 'tel:') ? p.href : '';
   } catch { return ''; }
 }
-// Resuelve URLs de imágenes: las relativas (/uploads/…) apuntan al backend.
-function imgUrl(u) {
-  if (!u) return '';
-  if (/^https?:\/\//i.test(u)) return u;
-  if (u.startsWith('/')) return API_BASE + u;
-  return u;
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
+  const res = await fetch(path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  let data = null;
+  try { data = await res.json(); } catch { /* no body */ }
+  if (!res.ok) throw new Error((data && data.error) || 'Error del servidor');
+  return data;
 }
 function toast(msg, kind) {
   const c = $('toast-container');
@@ -51,77 +101,23 @@ function toast(msg, kind) {
   setTimeout(() => el.remove(), 3000);
 }
 
-/* ── compartir la guarida (QR + copiar enlace + WhatsApp) ─────────── */
-const SHARE_URL = 'https://thenecioia-png.github.io/';
-const SHARE_TEXT = 'El Necio Digital — La Guarida. Todas mis creaciones y logros, en un solo lugar.';
-
-function initShare() {
-  const copyBtn = $('share-copy');
-  const waBtn = $('share-whatsapp');
-  if (!copyBtn && !waBtn) return;
-
-  copyBtn.addEventListener('click', async () => {
-    const ok = async () => toast('Enlace copiado al portapapeles.');
-    try {
-      await navigator.clipboard.writeText(SHARE_URL);
-      ok();
-    } catch {
-      // fallback para contextos sin Clipboard API (p. ej. http)
-      const ta = document.createElement('textarea');
-      ta.value = SHARE_URL; ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); ok(); }
-      catch { toast('No se pudo copiar: ' + SHARE_URL, 'err'); }
-      ta.remove();
-    }
-  });
-
-  waBtn.addEventListener('click', () => {
-    window.open('https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' ' + SHARE_URL), '_blank', 'noopener');
-  });
-}
-
-/* ── modals (accesibles: foco al abrir, trap de Tab y retorno de foco) ── */
-let lastFocused = null;
-function openModal(id) {
-  const el = $(id);
-  if (!el) return;
-  lastFocused = document.activeElement;
-  el.classList.remove('hidden');
-  const focusable = el.querySelector('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])');
-  (focusable || el).focus();
-}
-function closeModal(id) {
-  const el = $(id);
-  if (!el) return;
-  el.classList.add('hidden');
-  if (lastFocused && typeof lastFocused.focus === 'function') { lastFocused.focus(); lastFocused = null; }
-}
+/* ── modals ────────────────────────────────────────────────────────── */
+function openModal(id) { $(id).classList.remove('hidden'); }
+function closeModal(id) { $(id).classList.add('hidden'); }
 document.querySelectorAll('[data-close]').forEach((btn) => {
   btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close')));
 });
 document.querySelectorAll('.modal-backdrop').forEach((bd) => {
-  bd.addEventListener('click', (e) => { if (e.target === bd) closeModal(bd.id); });
+  bd.addEventListener('click', (e) => { if (e.target === bd) bd.classList.add('hidden'); });
 });
 document.addEventListener('keydown', (e) => {
-  const open = document.querySelector('.modal-backdrop:not(.hidden)');
-  if (!open) return;
-  if (e.key === 'Escape') { closeModal(open.id); return; }
-  if (e.key !== 'Tab') return;
-  const focusables = Array.from(open.querySelectorAll('input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])')).filter((el) => el.offsetParent !== null);
-  if (!focusables.length) return;
-  const first = focusables[0];
-  const last = focusables[focusables.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop').forEach((b) => b.classList.add('hidden'));
 });
 
 /* ── render ────────────────────────────────────────────────────────── */
 function applyAccent(color) {
   if (color && /^#[0-9a-fA-F]{6}$/.test(color)) {
     document.documentElement.style.setProperty('--accent', color);
-    document.documentElement.style.setProperty('--ember', color);
   }
 }
 
@@ -150,18 +146,15 @@ function renderNavLinks() {
 
 function renderHero() {
   const p = state.profile || {};
+  $('nav-emoji').textContent = p.emoji || '⚡';
   $('nav-name').textContent = p.name || 'El Necio';
   $('hero-name').innerHTML = highlightName(p.name || 'El Necio Digital');
   $('hero-tagline').textContent = p.tagline || 'Todo lo mío, en un solo lugar.';
   $('hero-bio').textContent = p.bio || '';
+  const aboutBio = $('about-bio');
+  if (aboutBio) aboutBio.textContent = p.bio || '';
   $('footer-name').textContent = p.name || 'El Necio Digital';
   $('footer-year').textContent = new Date().getFullYear();
-  const av = $('hero-avatar');
-  if (av) {
-    const src = imgUrl(p.avatar);
-    if (src) { av.src = src; av.closest('.hero-avatar-wrap')?.classList.remove('hidden'); }
-    else { av.removeAttribute('src'); av.closest('.hero-avatar-wrap')?.classList.add('hidden'); }
-  }
   applyAccent(p.accent);
 }
 function highlightName(name) {
@@ -179,7 +172,7 @@ function renderSections() {
   wrap.innerHTML = '';
   const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   SECTIONS.forEach((sec, idx) => {
-    const items = state.items.filter((i) => i.section === sec.id && (isAdmin || i.visibility !== 'private'));
+    const items = state.items.filter((i) => i.section === sec.id);
     const el = document.createElement('section');
     el.className = 'section reveal';
     el.id = 'section-' + sec.id;
@@ -210,13 +203,8 @@ function renderSections() {
 function cardHTML(it, isAdmin) {
   const url = safeUrl(it.url);
   const color = it.color || '#ff4d00';
-  const isPrivate = it.visibility === 'private';
-  const image = imgUrl(it.image);
-  const media = image
-    ? `<span class="card-img" style="border-color:${esc(color)}"><img src="${esc(image)}" alt="" loading="lazy" /></span>`
-    : `<span class="card-icon" style="color:${esc(color)}">${esc(it.icon || '🔗')}</span>`;
   const inner = `
-    ${media}
+    <span class="card-icon" aria-hidden="true" style="color:${esc(color)}">${iconSvg(it.icon)}</span>
     <span class="card-body">
       <span class="card-title">${esc(it.title)}</span>
       ${it.description ? `<span class="card-desc">${esc(it.description)}</span>` : ''}
@@ -226,22 +214,26 @@ function cardHTML(it, isAdmin) {
   const adminControls = isAdmin ? `
     <span class="card-admin">
       <button data-action="edit" data-id="${it.id}" title="Editar">✎</button>
-      <button data-action="toggle" data-id="${it.id}" title="Público/privado">${isPrivate ? '🙈' : '👁'}</button>
+      <button data-action="toggle" data-id="${it.id}" title="Público/privado">${it.visibility === 'public' ? '👁' : '🙈'}</button>
       <button data-action="del" data-id="${it.id}" class="del" title="Eliminar">✕</button>
     </span>` : '';
 
-  const flag = isAdmin && isPrivate ? `<span class="card-flag">privado</span>` : '';
+  const flag = isAdmin && it.visibility !== 'public' ? `<span class="card-flag">privado</span>` : '';
 
-  // El enlace solo envuelve el contenido clicable; los botones de admin van
-  // como hermanos, no dentro del <a> (HTML válido, sin <button> anidado).
-  const link = url
-    ? `<a class="card-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${inner}${arrow}</a>`
-    : `<div class="card-link">${inner}${arrow}</div>`;
-
-  return `<div class="card${isAdmin && isPrivate ? ' is-private' : ''}" data-id="${it.id}">${flag}${link}${adminControls}</div>`;
+  if (url) {
+    return `<a class="card${isAdmin && it.visibility !== 'public' ? ' is-private' : ''}" href="${esc(url)}" target="_blank" rel="noopener noreferrer" data-id="${it.id}">${flag}${inner}${arrow}${adminControls}</a>`;
+  }
+  return `<div class="card${isAdmin && it.visibility !== 'public' ? ' is-private' : ''}" data-id="${it.id}">${flag}${inner}${arrow}${adminControls}</div>`;
 }
 
 function bindCards() {
+  document.querySelectorAll('.card').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
   document.querySelectorAll('[data-add]').forEach((b) => {
     b.addEventListener('click', () => openItemModal(b.getAttribute('data-add')));
   });
@@ -266,147 +258,17 @@ function observeReveals() {
 }
 
 /* ── data loading ──────────────────────────────────────────────────── */
-const STATIC_DATA = {
-  profile: {
-    name: 'El Necio Digital',
-    tagline: 'Todas mis creaciones y logros, en un solo lugar.',
-    bio: 'Denison Peguero (The Necio), creador de contenido, músico (NEON HEART) y maker dominicano. Esta es mi vitrina digital: todas mis creaciones, proyectos, música y logros reunidos en un solo lugar, para que el mundo los vea.',
-    emoji: '⚡',
-    accent: '#ff4d00'
-  },
-  items: [
-    // ── Webs ───────────────────────────────────────────────
-    { id: 1, section: 'webs', title: 'GitHub', url: 'https://github.com/thenecioia-png', icon: '🐙', color: '#24292f', description: '50+ proyectos, apps y herramientas' },
-    { id: 2, section: 'webs', title: 'El Necio Digital', url: 'https://thenecioia-png.github.io/', icon: '⚡', color: '#ff4d00', description: 'Esta vitrina: todas mis creaciones en un solo lugar' },
-
-    // ── Canales (YouTube) ──────────────────────────────────
-    { id: 3, section: 'canales', title: 'El Narrador de Historias', url: 'https://www.youtube.com/@ElNarradordeHistorias-d9d', icon: '📺', color: '#ff0000', description: 'Documentales e historias del mundo entero' },
-    { id: 4, section: 'canales', title: 'The Necio — Música', url: 'https://www.youtube.com/channel/UCj_Jyy61gv69kD7Oa3VWcSA', icon: '🎵', color: '#ff4d00', description: 'NEON HEART y todas mis canciones' },
-    { id: 5, section: 'canales', title: 'EL NECIO IA', url: 'https://www.youtube.com/channel/UCWJe0BKrry3jvdyxaX8cvWw', icon: '🤖', color: '#00e5ff', description: 'Inteligencia artificial y tecnología' },
-
-    // ── Redes sociales ─────────────────────────────────────
-    { id: 6, section: 'redes', title: 'Facebook (perfil)', url: 'https://www.facebook.com/denison.peguero/', icon: '👤', color: '#1877f2', description: 'Denison Peguero en Facebook' },
-    { id: 7, section: 'redes', title: 'Facebook — El Narrador de Historias', url: '', icon: '📘', color: '#1877f2', description: 'Página de historias (enlace pendiente)' },
-    { id: 8, section: 'redes', title: 'TikTok', url: 'https://www.tiktok.com/@elnarradordehistoriasrd', icon: '🎬', color: '#000000', description: '@elnarradordehistoriasrd' },
-    { id: 9, section: 'redes', title: 'Instagram', url: 'https://www.instagram.com/denison_peguero/', icon: '📸', color: '#e1306c', description: '@denison_peguero' },
-    { id: 10, section: 'redes', title: 'Spotify', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '🎧', color: '#1db954', description: 'The Necio en Spotify' },
-    { id: 11, section: 'redes', title: 'Email', url: 'mailto:thenecioia@gmail.com', icon: '✉️', color: '#1a73e8', description: 'Escríbeme directo' },
-
-    // ── Apps (web / GitHub) ────────────────────────────────
-    { id: 12, section: 'apps', title: 'Conversor Universal', url: 'https://github.com/thenecioia-png/conversor-universal', icon: '🔄', color: '#00c853', description: 'Conversor de unidades y medidas' },
-    { id: 13, section: 'apps', title: 'Generador de Contraseñas', url: 'https://github.com/thenecioia-png/generador-passwords', icon: '🔐', color: '#ff6d00', description: 'Contraseñas seguras al instante' },
-    { id: 14, section: 'apps', title: 'Memoria — Juego', url: 'https://github.com/thenecioia-png/memoria-juego', icon: '🧠', color: '#aa00ff', description: 'Juego clásico de memoria' },
-    { id: 15, section: 'apps', title: 'Snake Clásico', url: 'https://github.com/thenecioia-png/snake-clasico', icon: '🐍', color: '#76ff03', description: 'El juego de la serpiente' },
-
-    // ── Apps (Google Play) ─────────────────────────────────
-    { id: 16, section: 'apps', title: 'El Contacto de los Contactos', url: 'https://play.google.com/store/apps/details?id=com.elcontacto.app', icon: '📇', color: '#34a853', description: 'App Android en Play Store' },
-    { id: 17, section: 'apps', title: 'NewsFlow', url: 'https://play.google.com/store/apps/details?id=com.newsflow.periodico', icon: '📰', color: '#4285f4', description: 'Periódico digital: 90+ medios en uno' },
-    { id: 18, section: 'apps', title: 'The Necio Cobranza', url: 'https://play.google.com/store/apps/details?id=com.thenecio.cobranza', icon: '💰', color: '#fbbc04', description: 'App de gestión de cobranza' },
-
-    // ── Diplomas (ProDominicana Capacita) ──────────────────
-    { id: 19, section: 'diplomas', title: 'Exportar Paso a Paso', url: 'https://thenecioia-png.github.io/diplomas/cert_curso3.pdf', icon: '📜', color: '#ff4d00', description: 'Guía práctica del proceso exportador, paso a paso · certificado PDF', visibility: 'public' },
-    { id: 20, section: 'diplomas', title: 'Aspectos Fundamentales de E-Commerce', url: 'https://thenecioia-png.github.io/diplomas/cert_curso4.pdf', icon: '🛒', color: '#ff4d00', description: 'Bases del comercio electrónico internacional · certificado PDF', visibility: 'public' },
-    { id: 21, section: 'diplomas', title: 'Los Incoterms', url: 'https://thenecioia-png.github.io/diplomas/cert_curso6.pdf', icon: '🚢', color: '#ff4d00', description: 'Reglas internacionales de comercio (Incoterms) · certificado PDF', visibility: 'public' },
-    { id: 22, section: 'diplomas', title: 'La Gestión Internacional en Procesos de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso7.pdf', icon: '🌐', color: '#ff4d00', description: 'Gestión de operaciones de exportación internacional · certificado PDF', visibility: 'public' },
-    { id: 23, section: 'diplomas', title: 'Cultura y Pensamiento Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso8.pdf', icon: '🧭', color: '#ff4d00', description: 'Mentalidad y cultura para exportar · certificado PDF', visibility: 'public' },
-    { id: 24, section: 'diplomas', title: 'Comportamiento del Consumidor', url: 'https://thenecioia-png.github.io/diplomas/cert_curso9.pdf', icon: '🛍️', color: '#ff4d00', description: 'Cómo decide y compra el consumidor · certificado PDF', visibility: 'public' },
-    { id: 25, section: 'diplomas', title: 'Desarrollo del Plan Estratégico para el Exportador', url: 'https://thenecioia-png.github.io/diplomas/cert_curso10.pdf', icon: '🎯', color: '#ff4d00', description: 'Cómo armar un plan estratégico de exportación · certificado PDF', visibility: 'public' },
-    { id: 26, section: 'diplomas', title: 'Internacionalización de Pymes', url: 'https://thenecioia-png.github.io/diplomas/cert_curso11.pdf', icon: '🏢', color: '#ff4d00', description: 'Llevar tu pyme a mercados globales · certificado PDF', visibility: 'public' },
-    { id: 27, section: 'diplomas', title: 'Ley 84-99: Reactivación y Fomento de las Exportaciones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso13.pdf', icon: '⚖️', color: '#ff4d00', description: 'Marco legal del fomento exportador dominicano · certificado PDF', visibility: 'public' },
-    { id: 28, section: 'diplomas', title: 'Gestión de Envase, Empaque y Embalaje de Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso14.pdf', icon: '📦', color: '#ff4d00', description: 'Envase, empaque y embalaje para exportar · certificado PDF', visibility: 'public' },
-    { id: 29, section: 'diplomas', title: 'Gestión de Riesgos en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso15.pdf', icon: '🛡️', color: '#ff4d00', description: 'Identificar y gestionar riesgos comerciales · certificado PDF', visibility: 'public' },
-    { id: 30, section: 'diplomas', title: 'Inteligencia Artificial en el Comercio Exterior', url: 'https://thenecioia-png.github.io/diplomas/cert_curso18.pdf', icon: '🤖', color: '#ff4d00', description: 'Aplicaciones de IA a la exportación · certificado PDF', visibility: 'public' },
-    { id: 31, section: 'diplomas', title: 'Inteligencia de Mercados', url: 'https://thenecioia-png.github.io/diplomas/cert_curso19.pdf', icon: '📊', color: '#ff4d00', description: 'Análisis de mercados internacionales · certificado PDF', visibility: 'public' },
-    { id: 32, section: 'diplomas', title: 'Branding y Posicionamiento de Marca en Entornos Globales', url: 'https://thenecioia-png.github.io/diplomas/cert_curso35.pdf', icon: '🏷️', color: '#ff4d00', description: 'Construir marca para mercados globales · certificado PDF', visibility: 'public' },
-    { id: 33, section: 'diplomas', title: 'Marketing en Redes Sociales para la Exportación', url: 'https://thenecioia-png.github.io/diplomas/cert_curso37.pdf', icon: '📣', color: '#ff4d00', description: 'Redes sociales aplicadas a la exportación · certificado PDF', visibility: 'public' },
-    { id: 34, section: 'diplomas', title: 'Aspectos Legales y Protección de la Propiedad Intelectual', url: 'https://thenecioia-png.github.io/diplomas/cert_curso38.pdf', icon: '©️', color: '#ff4d00', description: 'Protección legal e intelectual para exportar · certificado PDF', visibility: 'public' },
-    { id: 35, section: 'diplomas', title: 'Negociaciones Estratégicas, Tácticas y Estilos', url: 'https://thenecioia-png.github.io/diplomas/cert_curso5.pdf', icon: '🤝', color: '#ff4d00', description: 'Estrategias y tácticas para negociar mejor · certificado PDF', visibility: 'public' },
-    { id: 36, section: 'diplomas', title: 'Toma de Decisiones', url: 'https://thenecioia-png.github.io/diplomas/cert_curso12.pdf', icon: '🧠', color: '#ff4d00', description: 'Métodos y criterios para decidir mejor · certificado PDF', visibility: 'public' },
-    { id: 37, section: 'diplomas', title: 'Gestión Aduanera en la República Dominicana', url: 'https://thenecioia-png.github.io/diplomas/cert_curso17.pdf', icon: '🛃', color: '#ff4d00', description: 'Procesos y normativa aduanera dominicana · certificado PDF', visibility: 'public' },
-    { id: 38, section: 'diplomas', title: 'Alfabetización en Inteligencia Artificial', url: 'https://thenecioia-png.github.io/diplomas/cert_itla_ia.pdf', icon: '🎓', color: '#1e88e5', description: 'Programa Nacional de Alfabetización en IA (ITLA) · 10 horas · certificado PDF', visibility: 'public' },
-
-    // ── Contenido (música y libros) ────────────────────────
-    { id: 39, section: 'contenido', title: 'NEON HEART Vol.1', url: 'https://open.spotify.com/artist/0ZWTKHNdPxOLcfG9rV5cBG', icon: '💿', color: '#ff4081', description: 'Álbum de 10 canciones — en Spotify y YouTube' },
-    { id: 40, section: 'contenido', title: 'The Necio No Manipulado', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Denison-Peguero-ebook/dp/B0HLV64WMX', icon: '📕', color: '#e91e63', description: 'Libro — guía contra la manipulación' },
-    { id: 41, section: 'contenido', title: 'The Necio No Manipulado II', url: 'https://www.amazon.com.mx/Necio-No-Manipulado-Segunda-Autodefensa-ebook/dp/B0HLWM21RV', icon: '📗', color: '#9c27b0', description: 'Libro — manual de autodefensa mental' },
-    { id: 42, section: 'contenido', title: 'Google Play Books', url: 'https://play.google.com/store/search?q=Denison%20Peguero&c=books', icon: '📚', color: '#2196f3', description: 'Mis libros también en Google Play Books' }
-  ]
-};
-
-/* ── Backend API (autenticación y vitrina reales) ─────────────────── */
-const API_BASE = 'https://the-necio-api.onrender.com';
-const ADMIN_EMAIL = 'admin@theneciodigital.com';
-const ADMIN_TOKEN = 'necio-local-admin'; // marcador legacy (ya no se emite)
-
-async function api(path, opts = {}) {
-  const headers = { ...(opts.headers || {}) };
-  if (opts.body) headers['Content-Type'] = 'application/json';
-  const token = localStorage.getItem('hub_token');
-  if (token && token !== ADMIN_TOKEN) headers['Authorization'] = 'Bearer ' + token;
-  let res;
-  try {
-    res = await fetch(API_BASE + path, { ...opts, headers });
-  } catch {
-    const e = new Error('Sin conexión con el servidor.');
-    e.offline = true;
-    throw e;
-  }
-  let data = {};
-  try { data = await res.json(); } catch {}
-  if (!res.ok) {
-    const err = new Error(data.error || ('Error ' + res.status));
-    err.status = res.status;
-    throw err;
-  }
-  return data;
-}
-
-function staticItems() { return STATIC_DATA.items.map((x) => ({ ...x })); }
-
-// Sube una foto (obra/diploma/avatar) al backend y devuelve su URL pública.
-async function uploadImage(file) {
-  if (!file) return '';
-  const fd = new FormData();
-  fd.append('image', file);
-  const token = localStorage.getItem('hub_token');
-  const headers = {};
-  if (token && token !== ADMIN_TOKEN) headers['Authorization'] = 'Bearer ' + token;
-  let res;
-  try {
-    res = await fetch(API_BASE + '/api/hub/upload', { method: 'POST', headers, body: fd });
-  } catch {
-    throw new Error('Sin conexión con el servidor.');
-  }
-  let data = {};
-  try { data = await res.json(); } catch {}
-  if (!res.ok) throw new Error(data.error || ('Error ' + res.status));
-  return data.url || '';
-}
-
-// Vista pública: datos reales del servidor; si no responde, fallback estático.
 async function loadPublic() {
-  try {
-    const d = await api('/api/hub/public');
-    state.profile = d.profile || STATIC_DATA.profile;
-    state.items = Array.isArray(d.items) ? d.items : [];
-  } catch {
-    state.profile = { ...STATIC_DATA.profile };
-    state.items = staticItems();
-  }
+  const data = await api('/api/hub/public');
+  state.profile = data.profile;
+  state.items = data.items || [];
   renderHero();
   renderSections();
   renderNavLinks();
 }
-
-// Vista admin: todos los items (incluye privados), con token real.
 async function loadAdmin() {
-  try {
-    state.items = await api('/api/hub');
-  } catch (e) {
-    if (e.status === 401) { logout(); return; }
-    toast('No se pudieron cargar los elementos del servidor.', 'err');
-    state.items = [];
-  }
+  const data = await api('/api/hub');
+  state.items = Array.isArray(data) ? data : (data.items || []);
   renderSections();
 }
 
@@ -416,7 +278,7 @@ function enterAdmin(user) {
   $('admin-toggle').classList.add('is-admin');
   $('admin-label').textContent = user.name || 'Admin';
   $('admin-bar').classList.remove('hidden');
-  loadAdmin();
+  loadAdmin().catch((e) => toast(e.message, 'err'));
 }
 function logout() {
   state.token = null;
@@ -425,75 +287,58 @@ function logout() {
   $('admin-toggle').classList.remove('is-admin');
   $('admin-label').textContent = 'Admin';
   $('admin-bar').classList.add('hidden');
-  loadPublic();
+  loadPublic().catch(() => {});
   toast('Sesión cerrada');
 }
 
 /* ── login + 2FA ───────────────────────────────────────────────────── */
-let pending2fa = null;
 $('admin-toggle').addEventListener('click', () => {
   if (state.token) { logout(); return; }
   resetLogin();
   openModal('login-modal');
 });
 function resetLogin() {
-  pending2fa = null;
+  state.loginPhase = 'creds';
+  state.tempToken = null;
   $('login-error').classList.add('hidden');
+  $('login-2fa-wrap').classList.add('hidden');
   $('login-password').value = '';
-  $('login-2fa-code').value = '';
-  $('login-2fa-field').classList.add('hidden');
-  $('login-password-field').classList.remove('hidden');
-  $('login-email').readOnly = false;
-  $('login-submit').textContent = 'Entrar';
-}
-function finishLogin(r) {
-  state.token = r.token;
-  state.user = r.user;
-  localStorage.setItem('hub_token', r.token);
-  pending2fa = null;
-  closeModal('login-modal');
-  resetLogin();
-  enterAdmin(r.user);
-  toast('Bienvenido, ' + (r.user && (r.user.name || r.user.username) || 'El Necio'));
+  $('login-2fa').value = '';
 }
 $('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('login-error');
   err.classList.add('hidden');
-
-  // Paso 2: verificar código 2FA
-  if (pending2fa) {
-    const code = $('login-2fa-code').value.trim();
-    if (!code) { err.textContent = 'Escribe el código de 6 dígitos.'; err.classList.remove('hidden'); return; }
-    try {
-      const r = await api('/api/auth/2fa/verify', { method: 'POST', body: JSON.stringify({ temp_token: pending2fa, code }) });
-      finishLogin(r);
-    } catch (er) {
-      err.textContent = er.message || 'Código inválido.';
-      err.classList.remove('hidden');
-    }
-    return;
-  }
-
-  const email = $('login-email').value.trim().toLowerCase();
-  const password = $('login-password').value;
   try {
-    const r = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    if (r.requires2fa) {
-      pending2fa = r.temp_token;
-      $('login-2fa-field').classList.remove('hidden');
-      $('login-password-field').classList.add('hidden');
-      $('login-password').value = '';
-      $('login-2fa-code').value = '';
-      $('login-email').readOnly = true;
-      $('login-submit').textContent = 'Verificar';
-      $('login-2fa-code').focus();
-      return;
+    if (state.loginPhase === 'creds') {
+      const email = $('login-email').value.trim();
+      const password = $('login-password').value;
+      const res = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+      if (res.requires2fa) {
+        state.loginPhase = '2fa';
+        state.tempToken = res.temp_token;
+        $('login-2fa-wrap').classList.remove('hidden');
+        $('login-2fa').focus();
+        return;
+      }
+      state.token = res.token;
+      localStorage.setItem('hub_token', res.token);
+      closeModal('login-modal');
+      resetLogin();
+      enterAdmin(res.user);
+      toast('Bienvenido, ' + (res.user.name || 'admin'));
+    } else {
+      const code = $('login-2fa').value.trim();
+      const res = await api('/api/auth/2fa/verify', { method: 'POST', body: JSON.stringify({ temp_token: state.tempToken, code }) });
+      state.token = res.token;
+      localStorage.setItem('hub_token', res.token);
+      closeModal('login-modal');
+      resetLogin();
+      enterAdmin(res.user);
+      toast('Bienvenido, ' + (res.user.name || 'admin'));
     }
-    finishLogin(r);
   } catch (er) {
-    if (er.status === 429) err.textContent = 'Demasiados intentos. Espera 15 minutos.';
-    else err.textContent = er.message || 'Email o contraseña incorrectos.';
+    err.textContent = er.message;
     err.classList.remove('hidden');
   }
 });
@@ -514,9 +359,6 @@ function openItemModal(section, id) {
   $('item-color').value = '#ff4d00';
   $('item-color-text').value = '#ff4d00';
   $('item-visibility').checked = true;
-  $('item-image').value = '';
-  if ($('item-image-file')) $('item-image-file').value = '';
-  setImagePreview('item-image-preview', '');
   fillSectionSelect(section || 'webs');
   if (id) {
     const it = state.items.find((x) => x.id == id);
@@ -528,36 +370,12 @@ function openItemModal(section, id) {
       $('item-color').value = it.color || '#ff4d00';
       $('item-color-text').value = it.color || '#ff4d00';
       $('item-visibility').checked = it.visibility === 'public';
-      $('item-image').value = it.image || '';
-      setImagePreview('item-image-preview', it.image || '');
       fillSectionSelect(it.section);
     }
   }
   openModal('item-modal');
   $('item-title').focus();
 }
-
-// Muestra una vista previa (URL real o blob local) en el <img> indicado.
-function setImagePreview(imgId, url) {
-  const img = $(imgId);
-  if (!img) return;
-  if (url) { img.src = imgUrl(url); img.classList.remove('hidden'); }
-  else { img.removeAttribute('src'); img.classList.add('hidden'); }
-}
-
-// Al elegir un archivo, muestra una vista previa local antes de subirlo.
-function bindImagePreview(fileInputId, previewId) {
-  const fi = $(fileInputId);
-  const img = $(previewId);
-  if (!fi || !img) return;
-  fi.addEventListener('change', () => {
-    const f = fi.files && fi.files[0];
-    if (f) { img.src = URL.createObjectURL(f); img.classList.remove('hidden'); }
-    else { img.removeAttribute('src'); img.classList.add('hidden'); }
-  });
-}
-bindImagePreview('item-image-file', 'item-image-preview');
-bindImagePreview('profile-avatar-file', 'profile-avatar-preview');
 $('item-color').addEventListener('input', () => { $('item-color-text').value = $('item-color').value; });
 $('item-color-text').addEventListener('input', () => {
   if (/^#[0-9a-fA-F]{6}$/.test($('item-color-text').value)) $('item-color').value = $('item-color-text').value;
@@ -567,38 +385,23 @@ $('item-form').addEventListener('submit', async (e) => {
   const err = $('item-error');
   err.classList.add('hidden');
   const id = $('item-id').value;
-  const title = $('item-title').value.trim();
-  if (!title) {
-    err.textContent = 'El título es obligatorio.';
-    err.classList.remove('hidden');
-    return;
-  }
+  const body = {
+    section: $('item-section').value,
+    title: $('item-title').value.trim(),
+    url: $('item-url').value.trim(),
+    description: $('item-description').value.trim(),
+    icon: $('item-icon').value.trim() || '🔗',
+    color: $('item-color').value,
+    visibility: $('item-visibility').checked ? 'public' : 'private',
+  };
   try {
-    let image = $('item-image').value;
-    const fileInput = $('item-image-file');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      image = await uploadImage(fileInput.files[0]);
-    }
-    const body = {
-      section: $('item-section').value,
-      title,
-      url: $('item-url').value.trim(),
-      description: $('item-description').value.trim(),
-      icon: $('item-icon').value.trim() || '🔗',
-      color: $('item-color').value,
-      image,
-      visibility: $('item-visibility').checked ? 'public' : 'private',
-    };
-    if (id) {
-      await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify(body) });
-    } else {
-      await api('/api/hub', { method: 'POST', body: JSON.stringify(body) });
-    }
+    if (id) await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify(body) });
+    else await api('/api/hub', { method: 'POST', body: JSON.stringify(body) });
     closeModal('item-modal');
     await loadAdmin();
     toast(id ? 'Elemento actualizado' : 'Elemento agregado', 'ok');
   } catch (er) {
-    err.textContent = er.message || 'No se pudo guardar.';
+    err.textContent = er.message;
     err.classList.remove('hidden');
   }
 });
@@ -609,21 +412,16 @@ async function deleteItem(id) {
     await api('/api/hub/' + id, { method: 'DELETE' });
     await loadAdmin();
     toast('Elemento eliminado');
-  } catch (er) {
-    toast(er.message || 'No se pudo eliminar.', 'err');
-  }
+  } catch (e) { toast(e.message, 'err'); }
 }
 async function toggleItem(id) {
-  const it = state.items.find((x) => String(x.id) === String(id));
+  const it = state.items.find((x) => x.id == id);
   if (!it) return;
-  const next = it.visibility === 'public' ? 'private' : 'public';
   try {
-    await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify({ visibility: next }) });
+    await api('/api/hub/' + id, { method: 'PATCH', body: JSON.stringify({ visibility: it.visibility === 'public' ? 'private' : 'public' }) });
     await loadAdmin();
-    toast(next === 'private' ? 'Ahora es privado' : 'Ahora es público', 'ok');
-  } catch (er) {
-    toast(er.message || 'No se pudo cambiar la visibilidad.', 'err');
-  }
+    toast(it.visibility === 'public' ? 'Ahora es privado' : 'Ahora es público', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 /* ── profile ───────────────────────────────────────────────────────── */
@@ -636,9 +434,6 @@ $('admin-profile-btn').addEventListener('click', () => {
   $('profile-bio').value = p.bio || '';
   $('profile-accent').value = p.accent || '#ff4d00';
   $('profile-accent-text').value = p.accent || '#ff4d00';
-  $('profile-avatar').value = p.avatar || '';
-  if ($('profile-avatar-file')) $('profile-avatar-file').value = '';
-  setImagePreview('profile-avatar-preview', p.avatar || '');
   openModal('profile-modal');
 });
 $('profile-accent').addEventListener('input', () => { $('profile-accent-text').value = $('profile-accent').value; });
@@ -649,59 +444,143 @@ $('profile-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = $('profile-error');
   err.classList.add('hidden');
-  const name = $('profile-name').value.trim();
-  if (!name) {
-    err.textContent = 'El nombre es obligatorio.';
-    err.classList.remove('hidden');
-    return;
-  }
+  const body = {
+    name: $('profile-name').value.trim(),
+    emoji: $('profile-emoji').value.trim() || '⚡',
+    tagline: $('profile-tagline').value.trim(),
+    bio: $('profile-bio').value.trim(),
+    accent: $('profile-accent').value,
+  };
   try {
-    let avatar = $('profile-avatar').value;
-    const fileInput = $('profile-avatar-file');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      avatar = await uploadImage(fileInput.files[0]);
-    }
-    const body = {
-      name,
-      emoji: $('profile-emoji').value.trim() || '⚡',
-      tagline: $('profile-tagline').value.trim(),
-      bio: $('profile-bio').value.trim(),
-      accent: $('profile-accent').value,
-      avatar,
-    };
     await api('/api/hub/profile', { method: 'PUT', body: JSON.stringify(body) });
     closeModal('profile-modal');
     state.profile = { ...state.profile, ...body };
     renderHero();
     toast('Perfil actualizado', 'ok');
   } catch (er) {
-    err.textContent = er.message || 'No se pudo guardar el perfil.';
+    err.textContent = er.message;
     err.classList.remove('hidden');
   }
 });
+
+/* ── security (2FA) ────────────────────────────────────────────────── */
+$('admin-security-btn').addEventListener('click', openSecurity);
+async function openSecurity() {
+  $('security-error').classList.add('hidden');
+  openModal('security-modal');
+  try {
+    const st = await api('/api/auth/2fa/status');
+    renderSecurity(st.enabled);
+  } catch (e) {
+    $('security-error').textContent = e.message;
+    $('security-error').classList.remove('hidden');
+  }
+}
+function renderSecurity(enabled) {
+  const status = $('security-status');
+  const body = $('security-body');
+  if (enabled) {
+    status.className = 'security-status on';
+    status.textContent = '🔒 Doble autenticación ACTIVADA';
+    body.innerHTML = `
+      <p class="hint">Tu cuenta está protegida. Al iniciar sesión se te pedirá un código de tu app de autenticación.</p>
+      <label class="field"><span>Código actual (para desactivar)</span>
+        <input type="text" id="sec-code" inputmode="numeric" maxlength="6" placeholder="000000" />
+      </label>
+      <button class="btn btn-danger" id="sec-disable">Desactivar 2FA</button>`;
+    $('sec-disable').addEventListener('click', async () => {
+      const code = $('sec-code').value.trim();
+      try {
+        await api('/api/auth/2fa/disable', { method: 'POST', body: JSON.stringify({ code }) });
+        toast('2FA desactivado', 'ok');
+        renderSecurity(false);
+      } catch (e) { secError(e.message); }
+    });
+  } else {
+    status.className = 'security-status off';
+    status.textContent = '⚠️ Doble autenticación DESACTIVADA';
+    body.innerHTML = `
+      <button class="btn btn-primary" id="sec-start">Activar 2FA</button>`;
+    $('sec-start').addEventListener('click', startSetup);
+  }
+}
+function secError(msg) {
+  const err = $('security-error');
+  err.textContent = msg;
+  err.classList.remove('hidden');
+}
+async function startSetup() {
+  try {
+    const setup = await api('/api/auth/2fa/setup', { method: 'POST' });
+    const status = $('security-status');
+    status.className = 'security-status off';
+    status.textContent = '🔑 Escanea o copia esta clave en tu app de autenticación';
+    const body = $('security-body');
+    body.innerHTML = `
+      <div class="hint">1. Abre Google Authenticator, Authy o similar.<br>
+        2. Añade una cuenta nueva y escanea el QR o escribe esta clave manualmente.</div>
+      <div class="secret-box">${esc(setup.secret)}</div>
+      <button class="btn btn-ghost" id="sec-copy">Copiar clave</button>
+      <label class="field"><span>Introduce el código de 6 dígitos</span>
+        <input type="text" id="sec-confirm" inputmode="numeric" maxlength="6" placeholder="000000" />
+      </label>
+      <button class="btn btn-primary" id="sec-confirm-btn">Confirmar y activar</button>`;
+    $('sec-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(setup.secret).then(() => toast('Clave copiada', 'ok'));
+    });
+    $('sec-confirm-btn').addEventListener('click', async () => {
+      const code = $('sec-confirm').value.trim();
+      try {
+        await api('/api/auth/2fa/confirm', { method: 'POST', body: JSON.stringify({ code }) });
+        toast('2FA activado correctamente', 'ok');
+        renderSecurity(true);
+      } catch (e) { secError(e.message); }
+    });
+  } catch (e) { secError(e.message); }
+}
+
+/* ── API token (vía directa para la IA) ────────────────────────────── */
+$('admin-token-btn').addEventListener('click', async () => {
+  try {
+    const res = await api('/api/hub/token', { method: 'POST' });
+    showToken(res.token);
+  } catch (e) { toast(e.message, 'err'); }
+});
+function showToken(token) {
+  const bd = document.createElement('div');
+  bd.className = 'modal-backdrop';
+  bd.innerHTML = `
+    <div class="modal">
+      <h2 class="modal-title">Token de API</h2>
+      <p class="modal-sub">Esta clave permite a tu IA editar el hub sin tu contraseña. Guárdala en un lugar seguro.</p>
+      <div class="secret-box" style="font-size:0.8rem">${esc(token)}</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-primary" id="tok-copy">Copiar</button>
+        <button class="btn btn-ghost" id="tok-close">Cerrar</button>
+      </div>
+    </div>`;
+  bd.querySelector('#tok-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(token).then(() => toast('Token copiado', 'ok'));
+  });
+  bd.querySelector('#tok-close').addEventListener('click', () => bd.remove());
+  bd.addEventListener('click', (e) => { if (e.target === bd) bd.remove(); });
+  document.body.appendChild(bd);
+}
 
 /* ── boot ──────────────────────────────────────────────────────────── */
 $('admin-logout-btn').addEventListener('click', logout);
 
 (async function boot() {
   try {
-    // Token legacy (ya no se emite) o sin token → vista pública.
-    if (state.token && state.token !== ADMIN_TOKEN) {
+    if (state.token) {
+      // validar sesión existente
       try {
-        const user = await api('/api/me');
-        enterAdmin(user.user || user);
+        const me = await api('/api/me');
+        enterAdmin(me);
         return;
-      } catch {
-        localStorage.removeItem('hub_token');
-        state.token = null;
-      }
+      } catch { state.token = null; localStorage.removeItem('hub_token'); }
     }
-    if (state.token === ADMIN_TOKEN) {
-      localStorage.removeItem('hub_token');
-      state.token = null;
-    }
-    initShare();
-    loadPublic();
+    await loadPublic();
   } catch (e) {
     console.error('boot error', e);
     $('sections').innerHTML = '<p style="text-align:center;color:var(--ink-dim);padding:40px">No se pudo cargar el hub.</p>';
@@ -715,28 +594,17 @@ $('admin-logout-btn').addEventListener('click', logout);
 (function () {
   'use strict';
 
-  /* ── Radio en vivo ───────────────────────────────────────────────
-     Emisoras reales con stream directo (sin backend). Todas HTTPS. */
-  const RADIO_STATIONS = [
-    { id: 'z101',    name: 'La Z101',            genre: 'Merengue · Salsa · Noticias', country: '🇩🇴', stream: 'https://streaming.z101digital.com/z101' },
-    { id: 'lax',     name: 'La X 102.1',         genre: 'Éxitos y variedad',          country: '🇩🇴', stream: 'https://audio.livecastnet.com:2535/stream' },
-    { id: 'fuego',   name: 'Fuego 90.1',         genre: 'Merengue',                   country: '🇩🇴', stream: 'https://radiordomi.com/8390/stream' },
-    { id: 'urbano',  name: 'Top Urbano',         genre: 'Urbano · Reggaetón',         country: '🇩🇴', stream: 'https://radio.dominiserver.com/proxy/topurbano?mp=/stream' },
-    { id: 'salsa',   name: 'Salsa 92.7',         genre: 'Salsa',                      country: '🇩🇴', stream: 'https://stream.zeno.fm/h7lnwv51bh5uv' },
-    { id: 'bachata', name: 'Bachata Hits',       genre: 'Bachata',                    country: '🇩🇴', stream: 'https://stream.zeno.fm/prbf8rrgvzzuv' },
-    { id: 'ritmo',   name: 'Ritmo 96.5',         genre: 'Merengue clásico',           country: '🇩🇴', stream: 'https://stream-49.zeno.fm/y0br5ck4ququv' },
-    { id: 'fiera',   name: 'FieraMix',           genre: 'Bachata · Merengue',         country: '🇩🇴', stream: 'https://c11.radioboss.fm:18269/stream' },
-    { id: 'disco',   name: 'Disco 88.9',         genre: 'Disco · Clásicos',           country: '🇩🇴', stream: 'https://rgradio.net/disco89/disco89.mp3' },
-    { id: 'cdn',     name: 'CDN Radio',          genre: 'Noticias y análisis',        country: '🇩🇴', stream: 'https://play.cdnradio.com.do/cdnlive' },
-    { id: 'nueva',   name: 'La Nueva 106.9',     genre: 'Variedad musical',           country: '🇩🇴', stream: 'https://lanueva106.radioca.st/stream/1/' },
-    { id: 'rp',      name: 'Radio Paradise',     genre: 'Eclectic · Indie',           country: '🌍', stream: 'https://stream.radioparadise.com/mp3-192' },
-    { id: 'groove',  name: 'SomaFM Groove Salad', genre: 'Ambient · Chill',           country: '🌍', stream: 'https://ice1.somafm.com/groovesalad-128-mp3' },
-    { id: 'agent',   name: 'SomaFM Secret Agent', genre: 'Lounge · Downtempo',        country: '🌍', stream: 'https://ice1.somafm.com/secretagent-128-mp3' },
-  ];
-  const radio = { stations: RADIO_STATIONS, current: null, audio: null };
+  /* ── Radio en vivo ─────────────────────────────────────────────── */
+  const radio = { stations: [], current: null, audio: null };
 
-  function loadRadio() {
-    renderRadioGrid();
+  async function loadRadio() {
+    try {
+      radio.stations = await api('/api/radio/stations');
+      renderRadioGrid();
+    } catch (e) {
+      const g = $('radio-grid');
+      if (g) g.innerHTML = '<p class="radio-sub">La radio está apagando el fuego. Vuelve en un momento.</p>';
+    }
   }
 
   function renderRadioGrid() {
@@ -765,15 +633,20 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
     if (radio.audio) { try { radio.audio.pause(); radio.audio.src = ''; } catch {} }
     radio.current = id;
-    radio.audio = new Audio(st.stream);
+    radio.audio = new Audio('/api/radio/stream/' + encodeURIComponent(id));
     radio.audio.volume = Number($('radio-vol')?.value || 75) / 100;
-    radio.audio.play().then(() => setPlaying(true)).catch(() => {
-      setPlaying(false);
-      toast('No se pudo sintonizar esta emisora ahora mismo.', 'err');
-    });
+    radio.audio.crossOrigin = 'anonymous';
     $('radio-flag').textContent = st.country;
     $('radio-name').textContent = st.name;
-    $('radio-genre').textContent = st.genre;
+    $('radio-genre').textContent = 'Sintonizando…';
+    radio.audio.addEventListener('canplay', () => {
+      if (radio.current === id) { $('radio-genre').textContent = st.genre; setPlaying(true); }
+    }, { once: true });
+    radio.audio.play().catch(() => {
+      setPlaying(false);
+      $('radio-genre').textContent = st.genre;
+      toast('No se pudo sintonizar esta emisora ahora mismo.', 'err');
+    });
     radio.stations.forEach((s) => document.querySelector(`.radio-card[data-id="${s.id}"]`)?.classList.toggle('active', s.id === id));
   }
 
@@ -785,6 +658,7 @@ $('admin-logout-btn').addEventListener('click', logout);
   $('radio-play')?.addEventListener('click', () => {
     if (radio.audio) { playStation(radio.current); }
     else if (radio.stations.length) { playStation(radio.stations[0].id); }
+    else { loadRadio().then(() => { if (radio.stations.length) playStation(radio.stations[0].id); }); }
   });
   $('radio-vol')?.addEventListener('input', (e) => {
     if (radio.audio) radio.audio.volume = Number(e.target.value) / 100;
@@ -818,25 +692,6 @@ $('admin-logout-btn').addEventListener('click', logout);
 
   $('chat-fab')?.addEventListener('click', () => $('chat-panel').classList.toggle('hidden'));
   $('chat-close')?.addEventListener('click', () => $('chat-panel').classList.add('hidden'));
-  function diablitoReply(msg) {
-    const m = msg.toLowerCase();
-    const has = (...words) => words.some((w) => m.includes(w));
-    if (has('hola', 'hey', 'buenas', 'saludos', 'qué tal', 'que tal')) return '¡Hola, necio! Pasa, la guarida está calentita. 🔥';
-    if (has('quién eres', 'quien eres', 'cómo te llamas', 'como te llamas', 'tu nombre')) return 'Soy El Diablito, el diablillo travieso de la guarida. Cuido los enlaces y me río de todo. 😈';
-    if (has('música', 'musica', 'canción', 'cancion', 'spotify', 'neon heart', 'álbum', 'album')) return 'La música de NEON HEART está en Spotify y YouTube. Busca la sección Canales o Contenido. 🎵';
-    if (has('youtube', 'canal', 'video', 'vídeo', 'narrador', 'documental')) return 'El Narrador de Historias es el canal de documentales. Dale en la sección Canales. 📺';
-    if (has('github', 'código', 'codigo', 'proyecto', 'programar', 'app', 'aplicación')) return 'Más de 50 proyectos en GitHub. Mira la sección Webs o Apps. 🐙';
-    if (has('libro', 'kdp', 'amazon', 'escribir')) return 'Mis libros están en Amazon: "The Necio No Manipulado" I y II. Búscalos en la sección Contenido. 📚';
-    if (has('email', 'contacto', 'correo', 'mensaje', 'escribirte')) return 'Escríbeme a thenecioia@gmail.com. Está en la sección Redes. ✉️';
-    if (has('radio', 'emisora', 'escuchar', 'música en vivo', 'musica en vivo')) return 'La radio está abajo a la izquierda. Elige una emisora y dale al play. 📻';
-    if (has('clima', 'tiempo', 'lluvia', 'llueve', 'sol', 'frío', 'frio', 'calor')) return 'El clima de tu zona está arriba, en la cabecera. Si no sale, es que aún me estoy asomando. ☀️';
-    if (has('gracias', 'genial', 'bueno', 'cool', 'me gusta')) return 'De nada. Que el fuego nunca duerma. 😏';
-    if (has('adiós', 'adios', 'chao', 'hasta luego', 'bye', 'me voy')) return 'Vuelve cuando quieras, la puerta siempre está abierta (y caliente). 🔥';
-    if (has('creó', 'creo', 'creador', 'te hizo', 'denison', 'el necio', 'dueño')) return 'Me hizo El Necio. Todo lo de aquí es suyo: webs, música, historias, todo.';
-    if (has('secreto', 'misterio', 'oculto', 'escondido')) return 'Pssst… hay cosas que solo se ven entrando como admin. Pero yo no cuento nada. 🤫';
-    return 'Mmm, no te he entendido del todo. Prueba a preguntar por la música, los canales, los proyectos o cómo contactar. 😈';
-  }
-
   $('chat-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('chat-input');
@@ -846,62 +701,54 @@ $('admin-logout-btn').addEventListener('click', logout);
     addChatMsg('user', msg);
     const typing = addChatMsg('bot', '', true);
     try {
-      const r = await api('/api/hub/assistant', { method: 'POST', body: JSON.stringify({ message: msg }) });
+      const res = await api('/api/hub/assistant', { method: 'POST', body: JSON.stringify({ message: msg }) });
       typing.remove();
-      addChatMsg('bot', (r && r.reply) || diablitoReply(msg));
-    } catch {
+      addChatMsg('bot', res.reply || '…');
+    } catch (err) {
       typing.remove();
-      addChatMsg('bot', diablitoReply(msg));
+      addChatMsg('bot', err.message || 'Ups, El Diablito se escondió un momento.');
     }
   });
 
-  /* ── Geolocalización (IP) + contador de visitas local ──────────── */
-  async function fetchGeo() {
-    try {
-      const r = await fetch('https://ipwho.is/');
-      const g = await r.json();
-      if (g && g.success !== false && g.country) {
-        return {
-          country: g.country,
-          city: g.city || '',
-          flag: (g.flag && g.flag.emoji) || '',
-          lat: g.latitude,
-          lon: g.longitude,
-        };
-      }
-    } catch {}
-    return null;
-  }
-
+  /* ── Geolocalización + contador de visitas ─────────────────────── */
   async function registerVisit() {
-    const el = $('footer-visitor');
-    const chip = $('status-visitor-txt');
     try {
-      const r = await api('/api/hub/visit', { method: 'POST', body: '{}' });
-      const geo = (r && r.geo) || r || {};
-      if (geo && geo.country) {
-        const flag = geo.flag ? `<b>${esc(geo.flag)}</b> ` : '';
-        const where = `${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
-        if (el) el.innerHTML = `📍 ${flag}${where}`;
-        if (chip) chip.innerHTML = `📍 ${flag}<b>${esc(geo.country)}</b>`;
-        return;
+      const geo = await api('/api/hub/visit', { method: 'POST' });
+      const el = $('footer-visitor');
+      if (el) {
+        if (geo && geo.country) {
+          el.innerHTML = `📍 <b>${esc(geo.flag)}</b> ${esc(geo.country)}${geo.city ? ', ' + esc(geo.city) : ''}`;
+        } else {
+          el.textContent = '📍 visitante local';
+        }
+      }
+      const chip = $('status-visitor-txt');
+      if (chip) {
+        if (geo && geo.country) {
+          chip.innerHTML = `📍 ${esc(geo.flag)} <b>${esc(geo.country)}</b>`;
+        } else {
+          chip.textContent = '📍 visitante local';
+        }
       }
     } catch {}
-    if (el) el.textContent = '📍 visitante local';
-    if (chip) chip.textContent = '📍 visitante local';
   }
-
-  function loadStats() {
-    api('/api/hub/stats')
-      .then((r) => {
-        const n = Number((r && (r.visits != null ? r.visits : r.total)) || 0);
-        const txt = `🔥 <b>${n.toLocaleString('es-DO')}</b> visita${n === 1 ? '' : 's'}`;
-        const el = $('footer-visits');
-        if (el) el.innerHTML = txt;
-        const chip = $('status-visits-txt');
-        if (chip) chip.innerHTML = txt;
-      })
-      .catch(() => { /* sin backend: dejamos el marcador a cero */ });
+  async function loadStats() {
+    try {
+      const s = await api('/api/hub/stats');
+      const total = s.visits || 0;
+      const countries = s.countries || [];
+      const countriesTxt = countries.length ? ` · de <b>${countries.length}</b> país${countries.length === 1 ? '' : 'es'}` : '';
+      const el = $('footer-visits');
+      if (el) el.innerHTML = `🔥 <b>${total}</b> visita${total === 1 ? '' : 's'}${countriesTxt}`;
+      const chip = $('status-visits-txt');
+      if (chip) chip.innerHTML = `🔥 <b>${total}</b> visita${total === 1 ? '' : 's'}`;
+      const fc = $('footer-countries');
+      if (fc && countries.length) {
+        fc.innerHTML = countries.slice(0, 8).map((c) =>
+          `<span class="country-chip" title="${esc(c.country)} — ${c.count} visita${c.count === 1 ? '' : 's'}"><span class="country-flag">${esc(c.flag)}</span><span class="country-name">${esc(c.country)}</span><span class="country-count">${c.count}</span></span>`
+        ).join('');
+      }
+    } catch {}
   }
 
   /* ── Clima + día/noche ─────────────────────────────────────────── */
@@ -961,38 +808,31 @@ $('admin-logout-btn').addEventListener('click', logout);
     }
   }
 
-  function localWeatherFallback() {
-    const h = new Date().getHours();
-    const day = h >= 6 && h < 20;
-    weatherType = day ? 'sun' : 'night';
-    weatherInfo.label = day ? 'Día local' : 'Noche local';
-    weatherInfo.temp = null;
-    weatherInfo.isDay = null;
-  }
-
   async function initWeather() {
     applyTheme();
     try {
-      const geo = await fetchGeo();
-      if (geo && geo.lat != null && geo.lon != null) {
-        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current_weather=true`);
-        const w = await r.json();
-        const cw = w && w.current_weather;
-        if (cw && cw.weathercode != null) {
-          weatherType = wmoType(cw.weathercode) || weatherType;
-          weatherInfo.temp = cw.temperature;
-          weatherInfo.code = cw.weathercode;
-          weatherInfo.label = wmoLabel(cw.weathercode);
-          weatherInfo.isDay = cw.is_day === 1;
-          applyTheme(cw.is_day === 1);
-        } else {
-          localWeatherFallback();
-        }
+      const w = await api('/api/hub/weather');
+      if (w && w.available && w.code != null) {
+        weatherType = wmoType(w.code) || weatherType;
+        weatherInfo.temp = w.temperature;
+        weatherInfo.code = w.code;
+        weatherInfo.label = wmoLabel(w.code);
+        weatherInfo.isDay = w.is_day;
+        applyTheme(w.is_day ? true : false);
       } else {
-        localWeatherFallback();
+        const h = new Date().getHours();
+        const day = h >= 6 && h < 20;
+        weatherType = day ? 'sun' : 'night';
+        weatherInfo.label = day ? 'Día local' : 'Noche local';
+        weatherInfo.temp = null;
+        weatherInfo.isDay = null;
       }
     } catch {
-      localWeatherFallback();
+      const h = new Date().getHours();
+      const day = h >= 6 && h < 20;
+      weatherType = day ? 'sun' : 'night';
+      weatherInfo.label = day ? 'Día local' : 'Noche local';
+      weatherInfo.temp = null;
     }
     renderWeather();
   }
@@ -1024,6 +864,42 @@ $('admin-logout-btn').addEventListener('click', logout);
 
     for (let i = 0; i < 7; i++) clouds.push({ x: Math.random() * W, y: Math.random() * H * 0.4, r: 60 + Math.random() * 140, s: 0.04 + Math.random() * 0.1, a: 0.05 + Math.random() * 0.1 });
     for (let i = 0; i < 120; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.7, r: 0.5 + Math.random() * 1.4, tw: Math.random() * Math.PI * 2, s: 0.5 + Math.random() * 1.5 });
+
+    // rastro de brasas al mover el mouse (vida)
+    let mouseX = -100, mouseY = -100;
+    window.addEventListener('mousemove', (e) => {
+      if (reduceMotion) return;
+      mouseX = e.clientX; mouseY = e.clientY;
+      if (embers.length < 55 && Math.random() < 0.4) {
+        embers.push({
+          x: mouseX + (Math.random() - 0.5) * 8,
+          y: mouseY + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: -(0.15 + Math.random() * 0.5),
+          r: 0.7 + Math.random() * 1.8,
+          life: 0.55,
+          hue: Math.random() < 0.6 ? '255,180,70' : '255,110,25',
+        });
+      }
+    }, { passive: true });
+
+    // chispas al hacer clic en cualquier parte (emoción)
+    window.addEventListener('click', (e) => {
+      if (reduceMotion) return;
+      const n = 14;
+      for (let i = 0; i < n; i++) {
+        const ang = (i / n) * Math.PI * 2;
+        const sp = 1 + Math.random() * 1.8;
+        embers.push({
+          x: e.clientX, y: e.clientY,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp - 0.4,
+          r: 1 + Math.random() * 2.2,
+          life: 0.8,
+          hue: Math.random() < 0.5 ? '255,180,70' : '255,110,25',
+        });
+      }
+    });
 
     function spawnEmber() {
       embers.push({
@@ -1137,8 +1013,17 @@ $('admin-logout-btn').addEventListener('click', logout);
       ctx.restore();
     }
 
+    let lastFrame = 0;
     function tick(t) {
-      if (document.hidden) { requestAnimationFrame(tick); return; }
+      requestAnimationFrame(tick);
+
+      // Throttle a ~30fps: el ambiente no necesita 60fps y así consume la mitad de CPU/batería.
+      if (t - lastFrame < 33) return;
+      lastFrame = t;
+
+      // No dibujar si la pestaña está oculta (rAF ya se pausa solo, pero es explícito).
+      if (document.hidden) return;
+
       ctx.clearRect(0, 0, W, H);
 
       if (!reduceMotion && embers.length < 42 && Math.random() < 0.35) spawnEmber();
@@ -1153,8 +1038,6 @@ $('admin-logout-btn').addEventListener('click', logout);
         if (fl) { fl.classList.remove('flash'); void fl.offsetWidth; fl.classList.add('flash'); }
         spawnBolt();
       }
-
-      requestAnimationFrame(tick);
     }
 
     requestAnimationFrame(tick);
@@ -1253,7 +1136,10 @@ $('admin-logout-btn').addEventListener('click', logout);
         if (Math.hypot(target.x-px,target.y-py) < 6){ target=null;
           if (state===STATES.WALK||state===STATES.RUN) setState(STATES.IDLE); }
       }
-      if (appear) root.style.transform = 'translate3d('+px.toFixed(1)+'px,'+py.toFixed(1)+'px,0) scaleX('+dir+')';
+      if (appear) {
+        root.style.transform = 'translate3d('+px.toFixed(1)+'px,'+py.toFixed(1)+'px,0) scaleX('+dir+')';
+        say.style.transform = 'translateX(-50%) scaleX(' + dir + ')';
+      }
       if (appear && state!==STATES.SLEEP && Date.now()-lastInteract > CFG.timing.sleepAfter){ setState(STATES.SLEEP); sayPhrase('Zzz…',3200); }
       requestAnimationFrame(tick);
     }
@@ -1280,12 +1166,96 @@ $('admin-logout-btn').addEventListener('click', logout);
     every(CFG.timing.mischiefEvery, doMischief);
     every(CFG.timing.jumpEvery, doJump);
     every(CFG.timing.sayEvery, () => sayPhrase(pick(PHRASES)));
-    // aparece solo al poco de cargar, para que ande por toda la web sin esperar el scroll
-    setTimeout(() => {
-      if (!appear) { const sp = safePoint(); px = sp.x; py = sp.y; target = null;
-        appear = true; root.classList.add('on'); setState(STATES.IDLE); }
-    }, 2500);
     requestAnimationFrame(tick);
+  }
+
+  /* ── Compartir (Web Share API) ────────────────────────────────── */
+  $('share-btn')?.addEventListener('click', async () => {
+    const url = window.location.href;
+    const title = document.title || 'El Necio Digital — La Guarida';
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch {}
+    } else if (navigator.clipboard) {
+      try { await navigator.clipboard.writeText(url); toast('Enlace copiado al portapapeles', 'ok'); } catch {}
+    }
+  });
+
+  /* ── Easter egg: escribe "necio" en el buscador ───────────────── */
+  function necioEgg() {
+    for (let i = 0; i < 45; i++) {
+      const s = document.createElement('span');
+      s.className = 'rain-spark';
+      s.style.left = (Math.random() * 100) + 'vw';
+      s.style.animationDelay = (Math.random() * 1.2) + 's';
+      s.style.animationDuration = (1.6 + Math.random() * 1.4) + 's';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 3500);
+    }
+    toast('🔥 ¡Necio! Encontraste el rincón secreto de la guarida. El fuego nunca duerme.', 'ok');
+  }
+
+  /* ── Buscador de obras ────────────────────────────────────────── */
+  $('search-input')?.addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    if (q === 'necio') necioEgg();
+    document.querySelectorAll('.card').forEach((card) => {
+      const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+      const desc = card.querySelector('.card-desc')?.textContent.toLowerCase() || '';
+      const match = !q || title.includes(q) || desc.includes(q);
+      card.style.display = match ? '' : 'none';
+    });
+    document.querySelectorAll('.section').forEach((sec) => {
+      const anyVisible = [...sec.querySelectorAll('.card')].some((c) => c.style.display !== 'none');
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+  });
+
+  /* ── Reloj en vivo ────────────────────────────────────────────── */
+  function updateClock() {
+    const el = $('status-clock-txt');
+    if (!el) return;
+    const now = new Date();
+    const date = now.toLocaleDateString('es-DO', { day: '2-digit', month: 'short' });
+    const time = now.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', hour12: false });
+    el.textContent = `${date} · ${time}`;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  /* ── Formulario de contacto ───────────────────────────────────── */
+  $('contact-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('contact-name').value.trim();
+    const email = $('contact-email').value.trim();
+    const message = $('contact-message').value.trim();
+    if (!name || !email || !message) return;
+    const subject = encodeURIComponent(`Mensaje de ${name} — La Guarida`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:thenecioia@gmail.com?subject=${subject}&body=${body}`;
+    toast('Abriendo tu correo para enviar el mensaje…', 'ok');
+  });
+
+  /* ── Feed de YouTube (últimos videos) ──────────────────────────── */
+  async function loadVideos() {
+    const grid = $('videos-grid');
+    if (!grid) return;
+    try {
+      const vids = await api('/api/hub/youtube');
+      if (!vids || !vids.length) {
+        grid.innerHTML = '<div class="card-desc" style="grid-column:1/-1">Aún no hay videos recientes.</div>';
+        return;
+      }
+      grid.innerHTML = vids.map((v) => `
+        <a class="video-card" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">
+          <span class="video-thumb"><img src="${esc(v.thumb)}" alt="" loading="lazy" /></span>
+          <span class="video-meta">
+            <span class="video-title">${esc(v.title)}</span>
+            <span class="video-channel">${esc(v.channel)}</span>
+          </span>
+        </a>`).join('');
+    } catch (e) {
+      grid.innerHTML = '<div class="card-desc" style="grid-column:1/-1">No se pudieron cargar los videos.</div>';
+    }
   }
 
   /* ── boot de la capa viva ──────────────────────────────────────── */
@@ -1293,6 +1263,7 @@ $('admin-logout-btn').addEventListener('click', logout);
     loadRadio();
     registerVisit();
     loadStats();
+    loadVideos();
     initWeather().then(startCanvas);
     initWanderer();
   }
